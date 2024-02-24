@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:test_project/camera_screen.dart';
 
 late List<CameraDescription> cameras;
@@ -33,6 +34,7 @@ class CameraApp extends StatefulWidget {
 class _CameraAppState extends State<CameraApp> {
   late CameraController _controller;
   late bool _onFlash;
+  List<bool> aspectRatio = [false, false, false];
   @override
   void initState() {
     super.initState();
@@ -60,6 +62,16 @@ class _CameraAppState extends State<CameraApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_home,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.crop_16_9),
+            label: "9:16",
+          )
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
