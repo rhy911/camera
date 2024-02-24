@@ -17,8 +17,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: CameraApp(),
+    return MaterialApp(
+      home: const CameraApp(),
     );
   }
 }
@@ -32,6 +32,7 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   late CameraController _controller;
+  late bool _onFlash;
   @override
   void initState() {
     super.initState();
@@ -53,15 +54,42 @@ class _CameraAppState extends State<CameraApp> {
         }
       }
     });
+    _onFlash = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _onFlash = !_onFlash;
+              });
+            },
+            icon: _onFlash
+                ? const Icon(Icons.flash_on_sharp)
+                : const Icon(Icons.flash_off_sharp),
+            color: Colors.white,
+          ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.menu),
+            color: Colors.white,
+          ),
+        ],
+      ),
       body: Stack(children: [
-        SizedBox(
-          height: double.infinity,
-          child: CameraPreview(_controller),
+        AspectRatio(
+          aspectRatio: 9 / 16,
+          child: SizedBox(
+            height: double.infinity,
+            child: CameraPreview(_controller),
+          ),
         ),
         Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -69,8 +97,8 @@ class _CameraAppState extends State<CameraApp> {
           children: [
             Center(
               child: Container(
-                margin: const EdgeInsets.all(30.0),
-                child: MaterialButton(
+                margin: const EdgeInsets.all(80.0),
+                child: IconButton(
                   onPressed: () async {
                     if (!_controller.value.isInitialized) {
                       return;
@@ -79,7 +107,8 @@ class _CameraAppState extends State<CameraApp> {
                       return;
                     }
                     try {
-                      await _controller.setFlashMode(FlashMode.auto);
+                      await _controller.setFlashMode(
+                          _onFlash ? FlashMode.always : FlashMode.off);
                       XFile file = await _controller.takePicture();
 
                       Navigator.push(
@@ -91,8 +120,9 @@ class _CameraAppState extends State<CameraApp> {
                       return;
                     }
                   },
+                  iconSize: 80,
                   color: Colors.white,
-                  child: const Text("Take Photo"),
+                  icon: const Icon(Icons.circle_outlined),
                 ),
               ),
             )
