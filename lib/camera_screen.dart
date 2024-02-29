@@ -11,7 +11,7 @@ class ImagePreview extends StatelessWidget {
     File picture = File(file.path);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Image Preview"),
+        title: const Text("Image Preview"),
       ),
       body: AspectRatio(
         aspectRatio: 9 / 16,

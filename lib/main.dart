@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:test_project/aspect_ratio.dart';
 import 'package:test_project/camera_screen.dart';
 
 late List<CameraDescription> cameras;
@@ -18,8 +18,9 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: const CameraApp(),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: CameraApp(),
     );
   }
 }
@@ -34,7 +35,7 @@ class CameraApp extends StatefulWidget {
 class _CameraAppState extends State<CameraApp> {
   late CameraController _controller;
   late bool _onFlash;
-  List<bool> aspectRatio = [false, false, false];
+  late double _aspectRatio;
   @override
   void initState() {
     super.initState();
@@ -62,21 +63,12 @@ class _CameraAppState extends State<CameraApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_home,
-        children: [
-          SpeedDialChild(
-            child: Icon(Icons.crop_16_9),
-            label: "9:16",
-          )
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
         actions: [
+          MyButton(_aspectRatio),
           IconButton(
             onPressed: () {
               setState(() {
@@ -88,16 +80,11 @@ class _CameraAppState extends State<CameraApp> {
                 : const Icon(Icons.flash_off_sharp),
             color: Colors.white,
           ),
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.menu),
-            color: Colors.white,
-          ),
         ],
       ),
       body: Stack(children: [
         AspectRatio(
-          aspectRatio: 9 / 16,
+          aspectRatio: _aspectRatio,
           child: SizedBox(
             height: double.infinity,
             child: CameraPreview(_controller),
