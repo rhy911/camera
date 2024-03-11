@@ -1,11 +1,15 @@
+// ignore_for_file: must_be_immutable
+
 import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 class ImagePreview extends StatelessWidget {
-  ImagePreview(this.file, {super.key});
+  ImagePreview(this.file, this.as, {super.key});
   XFile file;
+  double as;
+
   @override
   Widget build(BuildContext context) {
     File picture = File(file.path);
@@ -14,7 +18,7 @@ class ImagePreview extends StatelessWidget {
         title: const Text("Image Preview"),
       ),
       body: AspectRatio(
-        aspectRatio: 9 / 16,
+        aspectRatio: as,
         child: Center(
           child: Image.file(picture),
         ),

@@ -1,5 +1,6 @@
-import 'dart:async';
+// ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:test_project/aspect_ratio.dart';
@@ -34,8 +35,8 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> {
   late CameraController _controller;
-  late bool _onFlash;
-  late double _aspectRatio;
+  late bool _onFlash = false;
+  late double _aspectRatio = 9 / 16;
   @override
   void initState() {
     super.initState();
@@ -57,7 +58,6 @@ class _CameraAppState extends State<CameraApp> {
         }
       }
     });
-    _onFlash = false;
   }
 
   @override
@@ -68,7 +68,14 @@ class _CameraAppState extends State<CameraApp> {
         backgroundColor: Colors.black,
         elevation: 0,
         actions: [
-          MyButton(_aspectRatio),
+          MyButton(
+            _aspectRatio,
+            (newAspectRatio) {
+              setState(() {
+                _aspectRatio = newAspectRatio;
+              });
+            },
+          ),
           IconButton(
             onPressed: () {
               setState(() {
@@ -113,7 +120,8 @@ class _CameraAppState extends State<CameraApp> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ImagePreview(file)));
+                              builder: (context) =>
+                                  ImagePreview(file, _aspectRatio)));
                     } on CameraException catch (e) {
                       debugPrint("Error occured while taking photo : $e");
                       return;

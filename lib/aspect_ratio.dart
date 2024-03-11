@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
 
 class MyButton extends StatelessWidget {
-  MyButton(this.ap, {super.key});
-  double ap;
+  MyButton(this.ap, this.onAspectRatioChanged, {Key? key}) : super(key: key);
+  final double ap;
+  final ValueChanged<double> onAspectRatioChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +12,10 @@ class MyButton extends StatelessWidget {
       onTap: () {
         showPopover(
           context: context,
-          bodyBuilder: (context) => AspectRatioMenu(ap),
+          bodyBuilder: (context) => AspectRatioMenu(
+            initialAspectRatio: ap,
+            onAspectRatioChanged: onAspectRatioChanged,
+          ),
           direction: PopoverDirection.top,
           width: 60,
           height: 150,
@@ -24,28 +28,57 @@ class MyButton extends StatelessWidget {
   }
 }
 
-class AspectRatioMenu extends StatelessWidget {
-  AspectRatioMenu(this.as, {super.key});
-  double as = 9 / 16;
+class AspectRatioMenu extends StatefulWidget {
+  AspectRatioMenu({
+    Key? key,
+    required this.initialAspectRatio,
+    required this.onAspectRatioChanged,
+  }) : super(key: key);
+
+  final double initialAspectRatio;
+  final ValueChanged<double> onAspectRatioChanged;
+
+  @override
+  _AspectRatioMenuState createState() => _AspectRatioMenuState();
+}
+
+class _AspectRatioMenuState extends State<AspectRatioMenu> {
+  late double as;
+
+  @override
+  void initState() {
+    super.initState();
+    as = widget.initialAspectRatio;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         TextButton(
           onPressed: () {
-            as = 9 / 16;
+            setState(() {
+              as = 9 / 16;
+            });
+            widget.onAspectRatioChanged(as);
           },
           child: const Text("9:16"),
         ),
         TextButton(
           onPressed: () {
-            as = 3 / 4;
+            setState(() {
+              as = 3 / 4;
+            });
+            widget.onAspectRatioChanged(as);
           },
           child: const Text("3:4"),
         ),
         TextButton(
           onPressed: () {
-            as = 1 / 1;
+            setState(() {
+              as = 1 / 1;
+            });
+            widget.onAspectRatioChanged(as);
           },
           child: const Text("1:1"),
         ),
