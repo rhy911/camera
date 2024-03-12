@@ -92,9 +92,15 @@ class _CameraAppState extends State<CameraApp> {
       body: Stack(children: [
         AspectRatio(
           aspectRatio: _aspectRatio,
-          child: SizedBox(
-            height: double.infinity,
-            child: CameraPreview(_controller),
+          child: ClipRect(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _controller.value.previewSize!.height,
+                height: _controller.value.previewSize!.width,
+                child: CameraPreview(_controller),
+              ),
+            ),
           ),
         ),
         Column(

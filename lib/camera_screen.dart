@@ -8,21 +8,25 @@ import 'package:flutter/material.dart';
 class ImagePreview extends StatelessWidget {
   ImagePreview(this.file, this.as, {super.key});
   XFile file;
-  double as;
+  double as = 9 / 16;
 
   @override
   Widget build(BuildContext context) {
     File picture = File(file.path);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Image Preview"),
-      ),
-      body: AspectRatio(
-        aspectRatio: as,
-        child: Center(
-          child: Image.file(picture),
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          title: const Text("Image Preview"),
         ),
-      ),
-    );
+        body: Center(
+          child: AspectRatio(
+              aspectRatio: as,
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: Image.file(picture),
+                ),
+              )),
+        ));
   }
 }

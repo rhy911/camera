@@ -23,7 +23,10 @@ class MyButton extends StatelessWidget {
           arrowWidth: 10,
         );
       },
-      child: const Icon(Icons.aspect_ratio),
+      child: const Icon(
+        Icons.aspect_ratio,
+        color: Colors.white,
+      ),
     );
   }
 }
