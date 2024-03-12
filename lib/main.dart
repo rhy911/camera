@@ -5,6 +5,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:test_project/aspect_ratio.dart';
 import 'package:test_project/camera_screen.dart';
+import 'package:test_project/gridlines.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
@@ -37,6 +38,7 @@ class _CameraAppState extends State<CameraApp> {
   late CameraController _controller;
   late bool _onFlash = false;
   late double _aspectRatio = 9 / 16;
+  bool _onGrid = false;
   @override
   void initState() {
     super.initState();
@@ -87,18 +89,32 @@ class _CameraAppState extends State<CameraApp> {
                 : const Icon(Icons.flash_off_sharp),
             color: Colors.white,
           ),
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _onGrid = !_onGrid;
+              });
+            },
+            icon: _onGrid
+                ? const Icon(Icons.grid_on_sharp)
+                : const Icon(Icons.grid_off_sharp),
+            color: Colors.white,
+          )
         ],
       ),
       body: Stack(children: [
         AspectRatio(
           aspectRatio: _aspectRatio,
           child: ClipRect(
-            child: FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                width: _controller.value.previewSize!.height,
-                height: _controller.value.previewSize!.width,
-                child: CameraPreview(_controller),
+            child: CustomPaint(
+              foregroundPainter: _onGrid ? GridPainter() : null,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.previewSize!.height,
+                  height: _controller.value.previewSize!.width,
+                  child: CameraPreview(_controller),
+                ),
               ),
             ),
           ),
