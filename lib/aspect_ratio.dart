@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:popover/popover.dart';
 
 class MyButton extends StatelessWidget {
-  MyButton(this.ap, this.onAspectRatioChanged, {Key? key}) : super(key: key);
+  const MyButton(this.ap, this.onAspectRatioChanged, {super.key});
   final double ap;
   final ValueChanged<double> onAspectRatioChanged;
 
@@ -32,11 +32,11 @@ class MyButton extends StatelessWidget {
 }
 
 class AspectRatioMenu extends StatefulWidget {
-  AspectRatioMenu({
-    Key? key,
+  const AspectRatioMenu({
+    super.key,
     required this.initialAspectRatio,
     required this.onAspectRatioChanged,
-  }) : super(key: key);
+  });
 
   final double initialAspectRatio;
   final ValueChanged<double> onAspectRatioChanged;
@@ -46,7 +46,7 @@ class AspectRatioMenu extends StatefulWidget {
 }
 
 class _AspectRatioMenuState extends State<AspectRatioMenu> {
-  late double as;
+  late double as = 9 / 16;
 
   @override
   void initState() {

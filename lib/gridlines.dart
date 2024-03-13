@@ -6,7 +6,7 @@ class GridPainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.white
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 0.0;
 
     int gridCount =
         3; // Change this number to increase or decrease the number of grid lines

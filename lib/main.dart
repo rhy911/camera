@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:test_project/aspect_ratio.dart';
 import 'package:test_project/camera_screen.dart';
 import 'package:test_project/gridlines.dart';
+import 'package:test_project/timer.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
@@ -39,6 +40,7 @@ class _CameraAppState extends State<CameraApp> {
   late bool _onFlash = false;
   late double _aspectRatio = 9 / 16;
   bool _onGrid = false;
+  bool _setTimer = false;
   @override
   void initState() {
     super.initState();
@@ -67,18 +69,24 @@ class _CameraAppState extends State<CameraApp> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        toolbarHeight: 90.0,
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: Colors.black,
         elevation: 0,
         actions: [
-          MyButton(
-            _aspectRatio,
-            (newAspectRatio) {
-              setState(() {
-                _aspectRatio = newAspectRatio;
-              });
-            },
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: MyButton(
+              _aspectRatio,
+              (newAspectRatio) {
+                setState(() {
+                  _aspectRatio = newAspectRatio;
+                });
+              },
+            ),
           ),
           IconButton(
+            padding: const EdgeInsets.all(10),
             onPressed: () {
               setState(() {
                 _onFlash = !_onFlash;
@@ -87,9 +95,9 @@ class _CameraAppState extends State<CameraApp> {
             icon: _onFlash
                 ? const Icon(Icons.flash_on_sharp)
                 : const Icon(Icons.flash_off_sharp),
-            color: Colors.white,
           ),
           IconButton(
+            padding: const EdgeInsets.all(10),
             onPressed: () {
               setState(() {
                 _onGrid = !_onGrid;
@@ -98,7 +106,16 @@ class _CameraAppState extends State<CameraApp> {
             icon: _onGrid
                 ? const Icon(Icons.grid_on_sharp)
                 : const Icon(Icons.grid_off_sharp),
-            color: Colors.white,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: TimerMenu(
+              onTimerFinished: () {
+                setState(() {
+                  _setTimer = true;
+                });
+              },
+            ),
           )
         ],
       ),
@@ -134,16 +151,21 @@ class _CameraAppState extends State<CameraApp> {
                     if (_controller.value.isTakingPicture) {
                       return;
                     }
+                    debugPrint('Value of _setTimer: $_setTimer');
                     try {
                       await _controller.setFlashMode(
                           _onFlash ? FlashMode.always : FlashMode.off);
-                      XFile file = await _controller.takePicture();
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  ImagePreview(file, _aspectRatio)));
+                      XFile? file;
+                      if (_setTimer) {
+                        file = await _controller.takePicture();
+                      }
+                      if (file != null) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ImagePreview(file!, _aspectRatio)));
+                      }
                     } on CameraException catch (e) {
                       debugPrint("Error occured while taking photo : $e");
                       return;
