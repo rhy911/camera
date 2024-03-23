@@ -1,48 +1,37 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class TimerMenu extends StatefulWidget {
-  final Function onTimerFinished;
+class TimerButton extends StatefulWidget {
+  final Function(int) onDurationChanged;
 
-  const TimerMenu({super.key, required this.onTimerFinished});
+  const TimerButton({super.key, required this.onDurationChanged});
 
   @override
-  State<TimerMenu> createState() => _TimerMenuState();
+  State<TimerButton> createState() => _TimerButtonState();
 }
 
-class _TimerMenuState extends State<TimerMenu> {
+class _TimerButtonState extends State<TimerButton> {
   List<bool> isSelected = [true, false, false];
   Timer? timer;
+  int setDuration = 0;
 
   void onTimerSelected(int index) {
-    while (index < isSelected.length && isSelected[index]) {
+    setState(() {
       switch (index) {
         case 0:
-          timer?.cancel();
-          widget.onTimerFinished();
+          print("timer off");
+          setDuration = 0;
           break;
         case 1:
           print("timer 3");
-          startTimer(3);
+          setDuration = 3;
           break;
         case 2:
-          startTimer(10);
+          print("timer 10");
+          setDuration = 10;
           break;
       }
-      index++;
-    }
-  }
-
-  void startTimer(int seconds) {
-    timer?.cancel();
-    timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-      if (seconds < 1) {
-        t.cancel();
-        print("Timer finished");
-        widget.onTimerFinished();
-      } else {
-        seconds--;
-      }
+      widget.onDurationChanged(setDuration);
     });
   }
 
@@ -70,4 +59,21 @@ class _TimerMenuState extends State<TimerMenu> {
       ],
     );
   }
+}
+
+Future<void> startTimer(int duration, Function(int) onTick) {
+  Completer<void> completer = Completer<void>();
+
+  Timer.periodic(const Duration(seconds: 1), (Timer t) {
+    if (duration < 1) {
+      t.cancel();
+      print("Timer finished");
+      completer.complete();
+    } else {
+      duration--;
+      onTick(duration);
+    }
+  });
+
+  return completer.future;
 }

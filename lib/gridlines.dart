@@ -8,8 +8,7 @@ class GridPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 0.0;
 
-    int gridCount =
-        3; // Change this number to increase or decrease the number of grid lines
+    int gridCount = 3;
 
     double stepSizeWidth = size.width / gridCount;
     double stepSizeHeight = size.height / gridCount;

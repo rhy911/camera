@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:test_project/aspect_ratio.dart';
 import 'package:test_project/camera_screen.dart';
 import 'package:test_project/gridlines.dart';
@@ -12,7 +14,12 @@ late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
-  runApp(const MyApp());
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+      overlays: []); //Fullscreen
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -40,7 +47,7 @@ class _CameraAppState extends State<CameraApp> {
   late bool _onFlash = false;
   late double _aspectRatio = 9 / 16;
   bool _onGrid = false;
-  bool _setTimer = false;
+  late int _timerDuration = 0;
   @override
   void initState() {
     super.initState();
@@ -65,9 +72,16 @@ class _CameraAppState extends State<CameraApp> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 90.0,
         iconTheme: const IconThemeData(color: Colors.white),
@@ -75,6 +89,7 @@ class _CameraAppState extends State<CameraApp> {
         elevation: 0,
         actions: [
           Padding(
+            //Aspect ratio button
             padding: const EdgeInsets.all(10.0),
             child: MyButton(
               _aspectRatio,
@@ -86,6 +101,7 @@ class _CameraAppState extends State<CameraApp> {
             ),
           ),
           IconButton(
+            //Flash button
             padding: const EdgeInsets.all(10),
             onPressed: () {
               setState(() {
@@ -97,6 +113,7 @@ class _CameraAppState extends State<CameraApp> {
                 : const Icon(Icons.flash_off_sharp),
           ),
           IconButton(
+            //Grid button
             padding: const EdgeInsets.all(10),
             onPressed: () {
               setState(() {
@@ -108,14 +125,13 @@ class _CameraAppState extends State<CameraApp> {
                 : const Icon(Icons.grid_off_sharp),
           ),
           Padding(
+            //Timer button
             padding: const EdgeInsets.all(20.0),
-            child: TimerMenu(
-              onTimerFinished: () {
-                setState(() {
-                  _setTimer = true;
-                });
-              },
-            ),
+            child: TimerButton(onDurationChanged: (int duration) {
+              setState(() {
+                _timerDuration = duration;
+              });
+            }),
           )
         ],
       ),
@@ -136,49 +152,60 @@ class _CameraAppState extends State<CameraApp> {
             ),
           ),
         ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Center(
-              child: Container(
-                margin: const EdgeInsets.all(80.0),
-                child: IconButton(
-                  onPressed: () async {
-                    if (!_controller.value.isInitialized) {
-                      return;
-                    }
-                    if (_controller.value.isTakingPicture) {
-                      return;
-                    }
-                    debugPrint('Value of _setTimer: $_setTimer');
-                    try {
-                      await _controller.setFlashMode(
-                          _onFlash ? FlashMode.always : FlashMode.off);
-                      XFile? file;
-                      if (_setTimer) {
-                        file = await _controller.takePicture();
-                      }
-                      if (file != null) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ImagePreview(file!, _aspectRatio)));
-                      }
-                    } on CameraException catch (e) {
-                      debugPrint("Error occured while taking photo : $e");
-                      return;
-                    }
-                  },
-                  iconSize: 80,
-                  color: Colors.white,
-                  icon: const Icon(Icons.circle_outlined),
-                ),
-              ),
-            )
-          ],
-        )
+        Container(
+          alignment: Alignment.bottomCenter,
+          margin: const EdgeInsetsDirectional.only(bottom: 80),
+          child: IconButton(
+            onPressed: () async {
+              if (!_controller.value.isInitialized) {
+                return;
+              }
+              if (_controller.value.isTakingPicture) {
+                return;
+              }
+              try {
+                await _controller
+                    .setFlashMode(_onFlash ? FlashMode.always : FlashMode.off);
+                XFile? file;
+
+                int initialTimer = _timerDuration;
+                await startTimer(_timerDuration, (remainingTime) {
+                  setState(() {
+                    _timerDuration = remainingTime;
+                  });
+                });
+                if (_timerDuration == 0) {
+                  file = await _controller.takePicture();
+                  setState(() {
+                    _timerDuration = initialTimer; // Reset the timer
+                  });
+                }
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ImagePreview(file!, _aspectRatio)));
+              } on CameraException catch (e) {
+                debugPrint("Error occured while taking photo : $e");
+                return;
+              }
+            },
+            iconSize: 85,
+            color: Colors.white,
+            icon: const Icon(Icons.circle_outlined),
+          ),
+        ),
+        Container(
+          alignment: Alignment.topCenter,
+          child: _timerDuration != 0
+              ? Text('$_timerDuration',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 70,
+                    fontWeight: FontWeight.w200,
+                  ))
+              : Container(),
+        ),
       ]),
     );
   }
