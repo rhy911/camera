@@ -14,13 +14,8 @@ class ImagePreview extends StatelessWidget {
   Widget build(BuildContext context) {
     File picture = File(file.path);
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title:
-            const Text("Image Preview", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.black,
-        elevation: 0,
+        title: const Text("Image Preview"),
       ),
       body: Center(
         child: AspectRatio(

@@ -1,4 +1,4 @@
-# test_project
+# Camera
 
 A new Flutter project.
 

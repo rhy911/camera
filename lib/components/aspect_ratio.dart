@@ -17,15 +17,15 @@ class MyButton extends StatelessWidget {
             onAspectRatioChanged: onAspectRatioChanged,
           ),
           direction: PopoverDirection.top,
-          width: 60,
-          height: 150,
-          arrowHeight: 10,
-          arrowWidth: 10,
+          width: 50,
+          height: 145,
+          arrowHeight: 5,
+          arrowWidth: 5,
+          transitionDuration: Durations.short4,
         );
       },
       child: const Icon(
         Icons.aspect_ratio,
-        color: Colors.white,
       ),
     );
   }
@@ -42,7 +42,7 @@ class AspectRatioMenu extends StatefulWidget {
   final ValueChanged<double> onAspectRatioChanged;
 
   @override
-  _AspectRatioMenuState createState() => _AspectRatioMenuState();
+  State<AspectRatioMenu> createState() => _AspectRatioMenuState();
 }
 
 class _AspectRatioMenuState extends State<AspectRatioMenu> {
@@ -65,7 +65,8 @@ class _AspectRatioMenuState extends State<AspectRatioMenu> {
             });
             widget.onAspectRatioChanged(as);
           },
-          child: const Text("9:16"),
+          child:
+              const Text("9:16", style: TextStyle(color: Colors.indigoAccent)),
         ),
         TextButton(
           onPressed: () {
@@ -74,7 +75,10 @@ class _AspectRatioMenuState extends State<AspectRatioMenu> {
             });
             widget.onAspectRatioChanged(as);
           },
-          child: const Text("3:4"),
+          child: const Text(
+            "3:4",
+            style: TextStyle(color: Colors.indigoAccent),
+          ),
         ),
         TextButton(
           onPressed: () {
@@ -83,7 +87,10 @@ class _AspectRatioMenuState extends State<AspectRatioMenu> {
             });
             widget.onAspectRatioChanged(as);
           },
-          child: const Text("1:1"),
+          child: const Text(
+            "1:1",
+            style: TextStyle(color: Colors.indigoAccent),
+          ),
         ),
       ],
     );

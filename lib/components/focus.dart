@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class ManualFocus extends StatefulWidget {
-  const ManualFocus({super.key});
-
+  const ManualFocus({super.key, required this.controller, required this.child});
+  final CameraController controller;
+  final Widget child;
   @override
   State<ManualFocus> createState() => _ManualFocusState();
 }
 
 class _ManualFocusState extends State<ManualFocus> {
-  late CameraController controller;
   bool isAutoFocus = true;
   late double x, y;
   @override
   Widget build(BuildContext context) {
-    if (!controller.value.isInitialized) {
+    if (!widget.controller.value.isInitialized) {
       return Container();
     }
     return GestureDetector(
@@ -23,16 +23,16 @@ class _ManualFocusState extends State<ManualFocus> {
         },
         child: Stack(
           children: [
-            Center(child: CameraPreview(controller)),
+            widget.child,
             if (!isAutoFocus)
               Positioned(
-                  top: y - 20,
-                  left: x - 20,
+                  top: y - 30,
+                  left: x - 30,
                   child: Container(
-                    height: 40,
-                    width: 40,
+                    height: 60,
+                    width: 60,
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        shape: BoxShape.rectangle,
                         border: Border.all(color: Colors.white, width: 1.5)),
                   ))
           ],
@@ -40,22 +40,21 @@ class _ManualFocusState extends State<ManualFocus> {
   }
 
   Future<void> _onTap(TapUpDetails details) async {
-    if (controller.value.isInitialized) {
+    if (widget.controller.value.isInitialized) {
       isAutoFocus = false;
       x = details.localPosition.dx;
       y = details.localPosition.dy;
 
       double fullWidth = MediaQuery.of(context).size.width;
-      double cameraHeight = fullWidth * controller.value.aspectRatio;
+      double cameraHeight = fullWidth * widget.controller.value.aspectRatio;
 
       double xp = x / fullWidth;
       double yp = y / cameraHeight;
 
       Offset point = Offset(xp, yp);
-      print("point : $point");
 
-      await controller.setFocusPoint(point);
-      controller.setExposurePoint(point);
+      await widget.controller.setFocusPoint(point);
+      widget.controller.setExposurePoint(point);
 
       setState(() {
         Future.delayed(const Duration(seconds: 2)).whenComplete(() {

@@ -39,7 +39,9 @@ class _TimerButtonState extends State<TimerButton> {
   Widget build(BuildContext context) {
     return ToggleButtons(
       isSelected: isSelected,
-      fillColor: Colors.deepPurpleAccent,
+      color: Theme.of(context).iconTheme.color,
+      selectedColor: Theme.of(context).iconTheme.color,
+      fillColor: Colors.indigoAccent,
       onPressed: (int newIndex) {
         setState(() {
           for (int index = 0; index < isSelected.length; index++) {
@@ -53,9 +55,9 @@ class _TimerButtonState extends State<TimerButton> {
         });
       },
       children: const [
-        Icon(Icons.timer_off, color: Colors.white),
-        Icon(Icons.timer_3, color: Colors.white),
-        Icon(Icons.timer_10, color: Colors.white),
+        Icon(Icons.timer_off),
+        Icon(Icons.timer_3),
+        Icon(Icons.timer_10),
       ],
     );
   }

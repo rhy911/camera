@@ -1,14 +1,13 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
-import 'package:test_project/aspect_ratio.dart';
-import 'package:test_project/camera_screen.dart';
-import 'package:test_project/gridlines.dart';
-import 'package:test_project/timer.dart';
+import 'package:Camera/components/aspect_ratio.dart';
+import 'package:Camera/components/focus.dart';
+import 'package:Camera/screen/camera_screen.dart';
+import 'package:Camera/components/gridlines.dart';
+import 'package:Camera/components/timer.dart';
+import 'package:Camera/themes/app_theme.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
@@ -28,9 +27,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: CameraApp(),
+      theme: AppTheme.appThemeData(),
+      home: const CameraApp(),
     );
   }
 }
@@ -80,13 +80,8 @@ class _CameraAppState extends State<CameraApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        toolbarHeight: 90.0,
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Colors.black,
-        elevation: 0,
         actions: [
           Padding(
             //Aspect ratio button
@@ -136,17 +131,20 @@ class _CameraAppState extends State<CameraApp> {
         ],
       ),
       body: Stack(children: [
-        AspectRatio(
-          aspectRatio: _aspectRatio,
-          child: ClipRect(
-            child: CustomPaint(
-              foregroundPainter: _onGrid ? GridPainter() : null,
-              child: FittedBox(
-                fit: BoxFit.cover,
-                child: SizedBox(
-                  width: _controller.value.previewSize!.height,
-                  height: _controller.value.previewSize!.width,
-                  child: CameraPreview(_controller),
+        ManualFocus(
+          controller: _controller,
+          child: AspectRatio(
+            aspectRatio: _aspectRatio,
+            child: ClipRect(
+              child: CustomPaint(
+                foregroundPainter: _onGrid ? GridPainter() : null,
+                child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: _controller.value.previewSize?.height,
+                    height: _controller.value.previewSize?.width,
+                    child: CameraPreview(_controller),
+                  ),
                 ),
               ),
             ),
@@ -191,7 +189,6 @@ class _CameraAppState extends State<CameraApp> {
               }
             },
             iconSize: 85,
-            color: Colors.white,
             icon: const Icon(Icons.circle_outlined),
           ),
         ),
@@ -199,11 +196,7 @@ class _CameraAppState extends State<CameraApp> {
           alignment: Alignment.topCenter,
           child: _timerDuration != 0
               ? Text('$_timerDuration',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 70,
-                    fontWeight: FontWeight.w200,
-                  ))
+                  style: Theme.of(context).primaryTextTheme.bodyMedium)
               : Container(),
         ),
       ]),
