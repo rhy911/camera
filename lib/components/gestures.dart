@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
-class ManualFocus extends StatefulWidget {
-  const ManualFocus({super.key, required this.controller, required this.child});
+class Gestures extends StatefulWidget {
+  const Gestures({super.key, required this.controller, required this.child});
   final CameraController controller;
   final Widget child;
   @override
-  State<ManualFocus> createState() => _ManualFocusState();
+  State<Gestures> createState() => _GesturesState();
 }
 
-class _ManualFocusState extends State<ManualFocus> {
+class _GesturesState extends State<Gestures> {
   bool isAutoFocus = true;
   late double x, y;
+  late double scale;
+  double zoom = 1.0;
+  double minZoom = 0.0;
+  double maxZoom = 10.0;
+
   @override
   Widget build(BuildContext context) {
     if (!widget.controller.value.isInitialized) {
       return Container();
     }
     return GestureDetector(
+        onScaleUpdate: (details) {
+          scale = details.scale;
+          if (scale != 1) {
+            zoom = scale.clamp(0.0, 10.0);
+            widget.controller.setZoomLevel(zoom);
+          }
+        },
         onTapUp: (details) {
-          _onTap(details);
+          if (scale == 1) {
+            _onTap(details);
+          }
         },
         child: Stack(
           children: [
