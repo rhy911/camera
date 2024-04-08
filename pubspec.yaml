@@ -38,6 +38,11 @@ dependencies:
   camera: ^0.10.5+9
   popover: ^0.3.0
   image: ^4.1.7
+  curved_navigation_bar: ^1.0.3
+  image_picker: ^1.0.7
+  photo_manager: ^3.0.0
+  
+ 
 
 dev_dependencies:
   flutter_test:

@@ -17,7 +17,7 @@ class MyButton extends StatelessWidget {
             onAspectRatioChanged: onAspectRatioChanged,
           ),
           direction: PopoverDirection.top,
-          width: 50,
+          width: 55,
           height: 145,
           arrowHeight: 5,
           arrowWidth: 5,

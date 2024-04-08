@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Camera/screen/landing_page.dart';
+import 'package:Camera/screen/pre_login/landing_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
