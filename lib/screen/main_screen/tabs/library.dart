@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class Library extends StatelessWidget {
   const Library({super.key});
@@ -19,8 +22,7 @@ class ImageGrid extends StatefulWidget {
   State<ImageGrid> createState() => _ImageGridState();
 }
 
-class _ImageGridState extends State<ImageGrid>
-    with AutomaticKeepAliveClientMixin<ImageGrid> {
+class _ImageGridState extends State<ImageGrid> {
   List<AssetEntity> assets = [];
   List<Uint8List> thumbnailsData = [];
   int currentPage = 0;
@@ -37,10 +39,12 @@ class _ImageGridState extends State<ImageGrid>
         final List<AssetEntity> assetList =
             await PhotoManager.getAssetListPaged(
                 page: currentPage, pageCount: itemsPerPage);
-        final List<Uint8List> thumbnails = await Future.wait(assetList
+        final List<AssetEntity> imageAssets =
+            assetList.where((asset) => asset.type == AssetType.image).toList();
+        final List<Uint8List> thumbnails = await Future.wait(imageAssets
             .map((asset) => asset.thumbnailData.then((value) => value!)));
         setState(() {
-          assets.addAll(assetList);
+          assets.addAll(imageAssets);
           thumbnailsData.addAll(thumbnails);
           currentPage++;
           _isLoading = false;
@@ -64,9 +68,6 @@ class _ImageGridState extends State<ImageGrid>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
@@ -75,7 +76,6 @@ class _ImageGridState extends State<ImageGrid>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
       body: CustomScrollView(
         controller: _scrollController,
@@ -102,7 +102,22 @@ class _ImageGridState extends State<ImageGrid>
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black),
                   ),
-                  child: Image.memory(bytes, fit: BoxFit.cover),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageView(
+                              imageFile: assets,
+                              initialIndex: index,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Stack(children: [
+                        Positioned.fill(
+                            child: Image.memory(bytes, fit: BoxFit.cover))
+                      ])),
                 );
               },
               childCount: assets.length,
@@ -117,6 +132,43 @@ class _ImageGridState extends State<ImageGrid>
                 : null,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ImageView extends StatelessWidget {
+  const ImageView(
+      {super.key, required this.imageFile, required this.initialIndex});
+  final List<AssetEntity> imageFile;
+  final int initialIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+      ),
+      body: PhotoViewGallery.builder(
+        itemCount: imageFile.length,
+        builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
+          child: FutureBuilder<File>(
+              future: imageFile[index].file.then((value) => value!),
+              builder: (context, snapshot) {
+                final file = snapshot.data;
+                if (file == null) {
+                  return const Center(child: CircularProgressIndicator());
+                } else {
+                  return PhotoView(
+                    imageProvider: FileImage(file),
+                  );
+                }
+              }),
+          minScale: PhotoViewComputedScale.covered,
+        ),
+        pageController: PageController(initialPage: initialIndex),
+        enableRotation: true,
       ),
     );
   }

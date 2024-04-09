@@ -1,8 +1,8 @@
 import 'package:Camera/screen/camera_screen.dart';
-import 'package:Camera/screen/main_screen/home.dart';
-import 'package:Camera/screen/main_screen/library.dart';
-import 'package:Camera/screen/main_screen/profile.dart';
-import 'package:Camera/screen/main_screen/search.dart';
+import 'package:Camera/screen/main_screen/tabs/home.dart';
+import 'package:Camera/screen/main_screen/tabs/library.dart';
+import 'package:Camera/screen/main_screen/tabs/profile.dart';
+import 'package:Camera/screen/main_screen/tabs/search.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
