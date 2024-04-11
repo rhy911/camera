@@ -1,4 +1,4 @@
-import 'package:Camera/screen/camera_screen.dart';
+import 'package:Camera/screen/main_screen/tabs/add.dart';
 import 'package:Camera/screen/main_screen/tabs/home.dart';
 import 'package:Camera/screen/main_screen/tabs/library.dart';
 import 'package:Camera/screen/main_screen/tabs/profile.dart';
@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Library(),
-    const CameraApp(),
+    const Add(),
     const Search(),
     const ProfileScreen(),
   ];

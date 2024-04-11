@@ -17,6 +17,7 @@ class CameraApp extends StatefulWidget {
 class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isRearCameraSelected = true;
+  bool _onSwitchCamera = false;
   bool _onFlash = false;
   double _aspectRatio = 9 / 16;
   bool _onGrid = false;
@@ -35,10 +36,10 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
       if (e is CameraException) {
         switch (e.code) {
           case 'CameraAccessDenied':
-            print("access denied");
+            debugPrint("Camera Access Denied");
             break;
           default:
-            print(e.description);
+            debugPrint(e.description);
             break;
         }
       }
@@ -127,6 +128,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
       body: Stack(children: [
         Gestures(
           controller: _controller,
+          cameraSwitch: _onSwitchCamera,
           child: AspectRatio(
             aspectRatio: _aspectRatio,
             child: ClipRect(
@@ -198,6 +200,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
               setState(() {
                 _isRearCameraSelected = !_isRearCameraSelected;
               });
+              _onSwitchCamera = true;
               CameraDescription selectedCamera =
                   _isRearCameraSelected ? cameras[0] : cameras[1];
               _controller = CameraController(
@@ -206,8 +209,9 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
               );
               try {
                 await _controller.initialize();
+                _onSwitchCamera = false;
               } catch (e) {
-                print('Error initializing camera: $e');
+                debugPrint('Error initializing camera: $e');
                 // Handle the error as appropriate for your app.
               }
 

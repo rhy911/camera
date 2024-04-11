@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class Gestures extends StatefulWidget {
-  const Gestures({super.key, required this.controller, required this.child});
+  const Gestures(
+      {super.key,
+      required this.controller,
+      required this.child,
+      required this.cameraSwitch});
   final CameraController controller;
   final Widget child;
+  final bool cameraSwitch;
   @override
   State<Gestures> createState() => _GesturesState();
 }
@@ -12,32 +17,68 @@ class Gestures extends StatefulWidget {
 class _GesturesState extends State<Gestures> {
   bool isAutoFocus = true;
   late double x, y;
-  late double scale;
+  double scale = 1.0;
+  double previousScale = 1.0;
+  bool isScailing = false;
   double zoom = 1.0;
   double minZoom = 0.0;
   double maxZoom = 10.0;
+
+  @override
+  void initState() {
+    resetZoom();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     if (!widget.controller.value.isInitialized) {
       return Container();
     }
+    //TODO: Fix the zoom issue (reset zoom when switching camera)
+    resetZoom();
     return GestureDetector(
+        onScaleStart: (details) {
+          previousScale = zoom;
+          isScailing = true;
+        },
         onScaleUpdate: (details) {
-          scale = details.scale;
-          if (scale != 1) {
-            zoom = scale.clamp(0.0, 10.0);
-            widget.controller.setZoomLevel(zoom);
+          double newScale = previousScale * details.scale;
+          if ((newScale - scale).abs() > 0.1) {
+            setState(() {
+              scale = newScale;
+              zoom = scale.clamp(1.0, 10.0);
+              widget.controller.setZoomLevel(zoom);
+            });
           }
         },
+        onScaleEnd: (details) {
+          isScailing = false;
+        },
         onTapUp: (details) {
-          if (scale == 1) {
+          if (!isScailing) {
             _onTap(details);
           }
         },
         child: Stack(
           children: [
             widget.child,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    color: Colors.black.withOpacity(0.3),
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text("Zoom: ${zoom.toStringAsFixed(1)}",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 20.0)),
+                  ),
+                ),
+              ],
+            ),
             if (!isAutoFocus)
               Positioned(
                   top: y - 30,
@@ -76,6 +117,17 @@ class _GesturesState extends State<Gestures> {
             isAutoFocus = true;
           });
         });
+      });
+    }
+  }
+
+  void resetZoom() {
+    if (widget.cameraSwitch) {
+      setState(() {
+        zoom = 1.0;
+        scale = 1.0;
+        previousScale = 1.0;
+        widget.controller.setZoomLevel(zoom);
       });
     }
   }
