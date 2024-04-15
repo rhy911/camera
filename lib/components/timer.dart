@@ -19,15 +19,15 @@ class _TimerButtonState extends State<TimerButton> {
     setState(() {
       switch (index) {
         case 0:
-          print("timer off");
+          debugPrint("timer off");
           setDuration = 0;
           break;
         case 1:
-          print("timer 3");
+          debugPrint("timer 3");
           setDuration = 3;
           break;
         case 2:
-          print("timer 10");
+          debugPrint("timer 10");
           setDuration = 10;
           break;
       }
@@ -69,7 +69,7 @@ Future<void> startTimer(int duration, Function(int) onTick) {
   Timer.periodic(const Duration(seconds: 1), (Timer t) {
     if (duration < 1) {
       t.cancel();
-      print("Timer finished");
+      debugPrint("Timer finished");
       completer.complete();
     } else {
       duration--;

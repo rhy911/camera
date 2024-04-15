@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "81408523923",
+    "project_id": "cameraapp-ed876",
+    "storage_bucket": "cameraapp-ed876.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:81408523923:android:fff0437ff4e383ccd79766",
+        "android_client_info": {
+          "package_name": "com.example.Camera"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSyPXQSTzqSRh0WcdrOYYwnt_R2XCNyKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

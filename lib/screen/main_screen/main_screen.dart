@@ -1,6 +1,6 @@
 import 'package:Camera/screen/main_screen/tabs/add.dart';
 import 'package:Camera/screen/main_screen/tabs/home.dart';
-import 'package:Camera/screen/main_screen/tabs/library.dart';
+import 'package:Camera/screen/main_screen/tabs/gallery.dart';
 import 'package:Camera/screen/main_screen/tabs/profile.dart';
 import 'package:Camera/screen/main_screen/tabs/search.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -25,7 +25,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _widgetOptions = <Widget>[
     const Home(),
     const Library(),
-    const Add(),
+    const AddWidget(),
     const Search(),
     const ProfileScreen(),
   ];
@@ -33,10 +33,11 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: CurvedNavigationBar(
         height: 75.0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         color: const Color.fromARGB(255, 100, 56, 172),
         index: _selectedIndex,
         onTap: navigateBottomBar,

@@ -1,8 +1,8 @@
-import 'package:Camera/screen/camera_screen.dart';
+import 'package:Camera/screen/camera/camera_screen.dart';
 import 'package:flutter/material.dart';
 
-class Add extends StatelessWidget {
-  const Add({super.key});
+class AddWidget extends StatelessWidget {
+  const AddWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

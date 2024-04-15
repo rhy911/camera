@@ -1,5 +1,7 @@
+import 'package:Camera/screen/main_screen/main_screen.dart';
 import 'package:Camera/screen/pre_login/sign_in.dart';
 import 'package:Camera/screen/pre_login/sign_up.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -71,6 +73,26 @@ class LandingScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class AuthCheck extends StatelessWidget {
+  const AuthCheck({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: StreamBuilder<User?>(
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return const MainScreen();
+          } else {
+            return const LandingScreen();
+          }
+        },
+        stream: FirebaseAuth.instance.authStateChanges(),
       ),
     );
   }

@@ -1,8 +1,57 @@
-import 'package:Camera/screen/main_screen/main_screen.dart';
+import 'package:Camera/helper/helper_function.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SignInWidget extends StatelessWidget {
+class SignInWidget extends StatefulWidget {
   const SignInWidget({super.key});
+
+  @override
+  State<SignInWidget> createState() => _SignInWidgetState();
+}
+
+class _SignInWidgetState extends State<SignInWidget> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  Future signInUser() async {
+    var context = this.context;
+    //SHOW LOADING CIRCLE
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      //POP LOADING CIRCLE
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+    } on FirebaseAuthException catch (e) {
+      if (context.mounted) {
+        //POP LOADING CIRCLE
+        Navigator.pop(context);
+        //SHOW ERROR MESSAGE
+        displayMessageToUser(e.code, context);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +106,9 @@ class SignInWidget extends StatelessWidget {
               width: 300,
               height: 50,
               child: TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   labelStyle: const TextStyle(
                       color: Color.fromARGB(160, 255, 255, 255)),
                   border: OutlineInputBorder(
@@ -75,6 +125,7 @@ class SignInWidget extends StatelessWidget {
               width: 300,
               height: 50,
               child: TextField(
+                controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   labelStyle: const TextStyle(
@@ -96,12 +147,7 @@ class SignInWidget extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MainScreen(),
-                    ),
-                  );
+                  signInUser();
                 },
                 child: const Text(
                   'Continue   ->',

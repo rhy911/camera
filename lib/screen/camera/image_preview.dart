@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class ImagePreview extends StatelessWidget {
   const ImagePreview(this.file, this.as, this.isRearCamera, {super.key});
@@ -11,14 +11,23 @@ class ImagePreview extends StatelessWidget {
   final double as;
   final bool isRearCamera;
 
-   Future<void> _saveImageToGallery() async {
-    final PermissionStatus status = await Permission.photos.request();
-    if (status.isGranted) {
-      await ImageGallerySaver.saveFile(file.path);
-      
-    } else {
-      debugPrint('Permission to access gallery is denied');
-    }
+  Future<void> _saveImageToGallery(BuildContext context) async {
+    PhotoManager.requestPermissionExtend().then((PermissionState state) async {
+      if (state == PermissionState.authorized) {
+        await ImageGallerySaver.saveFile(file.path);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Saved to Gallery'),
+              duration:
+                  Duration(seconds: 2), // Change this to your desired duration
+            ),
+          );
+        }
+      } else {
+        debugPrint('Permission to access gallery is denied');
+      }
+    });
   }
 
   @override
@@ -30,7 +39,7 @@ class ImagePreview extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              _saveImageToGallery();
+              _saveImageToGallery(context);
             },
             icon: const Icon(Icons.save_alt_rounded),
           )

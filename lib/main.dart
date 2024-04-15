@@ -1,13 +1,18 @@
 import 'dart:async';
-import 'package:Camera/screen/pre_login/landing_page.dart';
+import 'package:Camera/screen/pre_login/authentication.dart';
 import 'package:camera/camera.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:Camera/themes/app_theme.dart';
+import 'package:Camera/firebase/firebase_options.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   cameras = await availableCameras();
   SystemChrome.setEnabledSystemUIMode(
     SystemUiMode.edgeToEdge,
@@ -32,7 +37,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: AppTheme.appThemeData(),
-      home: const LandingScreen(),
+      home: const AuthPage(),
     );
   }
 }

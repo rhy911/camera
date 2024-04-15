@@ -1,8 +1,74 @@
-import 'package:Camera/screen/camera_screen.dart';
+import 'package:Camera/helper/helper_function.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class SignUpWidget extends StatelessWidget {
+class SignUpWidget extends StatefulWidget {
   const SignUpWidget({super.key});
+
+  @override
+  State<SignUpWidget> createState() => _SignUpWidgetState();
+}
+
+class _SignUpWidgetState extends State<SignUpWidget> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
+  //SIGN UP USER
+  Future<void> signUpUser() async {
+    var context = this.context;
+    //SHOW LOADING CIRCLE
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+    //CONFIRM PASSWORD MATCH
+    if (_passwordController.text != _confirmPasswordController.text) {
+      //POP LOADING CIRCLE
+      Navigator.pop(context);
+      //SHOW ERROR MESSAGE
+      displayMessageToUser('Password dont match', context);
+    } else {
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
+        createUserDocument(userCredential);
+        //POP LOADING CIRCLE
+        if (context.mounted) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        }
+      } on FirebaseAuthException catch (e) {
+        if (context.mounted) {
+          //POP LOADING CIRCLE
+          Navigator.pop(context);
+          //SHOW ERROR MESSAGE
+          displayMessageToUser(e.code, context);
+        }
+      }
+    }
+  }
+
+  Future<void> createUserDocument(UserCredential? userCredential) async {
+    if (userCredential != null && userCredential.user != null) {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'email': userCredential.user!.email,
+        'uid': userCredential.user!.uid,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +122,9 @@ class SignUpWidget extends StatelessWidget {
               width: 300,
               height: 50,
               child: TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email Address',
                   labelStyle: const TextStyle(
                       color: Color.fromARGB(160, 255, 255, 255)),
                   border: OutlineInputBorder(
@@ -74,6 +141,7 @@ class SignUpWidget extends StatelessWidget {
               width: 300,
               height: 50,
               child: TextField(
+                controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
                   labelStyle: const TextStyle(
@@ -95,6 +163,7 @@ class SignUpWidget extends StatelessWidget {
               width: 300,
               height: 50,
               child: TextField(
+                controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
                   labelStyle: const TextStyle(
@@ -116,12 +185,7 @@ class SignUpWidget extends StatelessWidget {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const CameraApp(),
-                    ),
-                  );
+                  signUpUser();
                 },
                 child: const Text(
                   'Continue   ->',

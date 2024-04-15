@@ -2,10 +2,12 @@ import 'package:Camera/components/aspect_ratio.dart';
 import 'package:Camera/components/gestures.dart';
 import 'package:Camera/components/gridlines.dart';
 import 'package:Camera/components/timer.dart';
-import 'package:Camera/screen/image_preview.dart';
+import 'package:Camera/screen/camera/image_preview.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:Camera/main.dart';
+
+enum Flashmode { auto, off, on }
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -17,8 +19,8 @@ class CameraApp extends StatefulWidget {
 class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   late CameraController _controller;
   bool _isRearCameraSelected = true;
-  bool _onSwitchCamera = false;
-  bool _onFlash = false;
+
+  Flashmode _flashmode = Flashmode.auto;
   double _aspectRatio = 9 / 16;
   bool _onGrid = false;
   int _timerDuration = 0;
@@ -95,12 +97,15 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
             padding: const EdgeInsets.all(10),
             onPressed: () {
               setState(() {
-                _onFlash = !_onFlash;
+                _flashmode = Flashmode
+                    .values[(_flashmode.index + 1) % Flashmode.values.length];
               });
             },
-            icon: _onFlash
-                ? const Icon(Icons.flash_on_sharp)
-                : const Icon(Icons.flash_off_sharp),
+            icon: _flashmode == Flashmode.on
+                ? const Icon(Icons.flash_on_rounded)
+                : _flashmode == Flashmode.off
+                    ? const Icon(Icons.flash_off_rounded)
+                    : const Icon(Icons.flash_auto_rounded),
           ),
           IconButton(
             //Grid button
@@ -128,7 +133,6 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
       body: Stack(children: [
         Gestures(
           controller: _controller,
-          cameraSwitch: _onSwitchCamera,
           child: AspectRatio(
             aspectRatio: _aspectRatio,
             child: ClipRect(
@@ -158,8 +162,13 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
                 return;
               }
               try {
-                await _controller
-                    .setFlashMode(_onFlash ? FlashMode.always : FlashMode.off);
+                await _controller.setFlashMode(
+                  _flashmode == Flashmode.on
+                      ? FlashMode.always
+                      : _flashmode == Flashmode.off
+                          ? FlashMode.off
+                          : FlashMode.auto,
+                );
                 XFile? file;
 
                 int initialTimer = _timerDuration;
@@ -174,11 +183,13 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
                     _timerDuration = initialTimer; // Reset the timer
                   });
                 }
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ImagePreview(
-                            file!, _aspectRatio, _isRearCameraSelected)));
+                if (context.mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => ImagePreview(
+                              file!, _aspectRatio, _isRearCameraSelected)));
+                }
               } on CameraException catch (e) {
                 debugPrint("Error occured while taking photo : $e");
                 return;
@@ -200,7 +211,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
               setState(() {
                 _isRearCameraSelected = !_isRearCameraSelected;
               });
-              _onSwitchCamera = true;
+
               CameraDescription selectedCamera =
                   _isRearCameraSelected ? cameras[0] : cameras[1];
               _controller = CameraController(
@@ -209,7 +220,6 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
               );
               try {
                 await _controller.initialize();
-                _onSwitchCamera = false;
               } catch (e) {
                 debugPrint('Error initializing camera: $e');
                 // Handle the error as appropriate for your app.

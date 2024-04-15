@@ -1,36 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: false,
       child: Scaffold(
           backgroundColor: Colors.white,
-          appBar: AppBar(
-            backgroundColor: const Color.fromARGB(255, 100, 56, 172),
-            automaticallyImplyLeading: false,
-            title: const Text(
-              'Camera App',
-              style: TextStyle(fontStyle: FontStyle.italic),
-            ),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.search),
-              ),
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.notifications),
-              ),
-            ],
-          ),
-          body: const Center(
+          body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [],
+              children: [
+                StreamBuilder<User?>(
+                    stream: FirebaseAuth.instance.authStateChanges(),
+                    builder: (context, snapshot) => snapshot.hasData
+                        ? Text('Welcome ${user.email}')
+                        : const Text('Please sign in'))
+              ],
             ),
           )),
     );

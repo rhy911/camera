@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class Gestures extends StatefulWidget {
-  const Gestures(
-      {super.key,
-      required this.controller,
-      required this.child,
-      required this.cameraSwitch});
+  const Gestures({
+    super.key,
+    required this.controller,
+    required this.child,
+  });
   final CameraController controller;
   final Widget child;
-  final bool cameraSwitch;
+
   @override
   State<Gestures> createState() => _GesturesState();
 }
@@ -26,17 +26,16 @@ class _GesturesState extends State<Gestures> {
 
   @override
   void initState() {
-    resetZoom();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     if (!widget.controller.value.isInitialized) {
+      resetZoom();
       return Container();
     }
-    //TODO: Fix the zoom issue (reset zoom when switching camera)
-    resetZoom();
+
     return GestureDetector(
         onScaleStart: (details) {
           previousScale = zoom;
@@ -122,13 +121,10 @@ class _GesturesState extends State<Gestures> {
   }
 
   void resetZoom() {
-    if (widget.cameraSwitch) {
-      setState(() {
-        zoom = 1.0;
-        scale = 1.0;
-        previousScale = 1.0;
-        widget.controller.setZoomLevel(zoom);
-      });
-    }
+    setState(() {
+      zoom = 1.0;
+      scale = 1.0;
+      previousScale = 1.0;
+    });
   }
 }
