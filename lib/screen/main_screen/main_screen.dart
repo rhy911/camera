@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: CurvedNavigationBar(
         height: 75.0,
         backgroundColor: Colors.transparent,
-        color: const Color.fromARGB(255, 100, 56, 172),
+        color: Theme.of(context).primaryColor,
         index: _selectedIndex,
         onTap: navigateBottomBar,
         items: [

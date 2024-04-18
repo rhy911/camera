@@ -77,6 +77,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         actions: [

@@ -15,11 +15,17 @@ class _HomeState extends State<Home> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-          backgroundColor: Colors.white,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              '  D I S C O V E R',
+            ),
+          ),
           body: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
+                const Text('Home'),
                 StreamBuilder<User?>(
                     stream: FirebaseAuth.instance.authStateChanges(),
                     builder: (context, snapshot) => snapshot.hasData

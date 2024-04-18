@@ -5,6 +5,23 @@ class Search extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            title: const Text(
+              '  S E A R C H',
+            ),
+          ),
+          body: const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Search'),
+              ],
+            ),
+          )),
+    );
   }
 }

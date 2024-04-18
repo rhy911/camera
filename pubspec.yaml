@@ -38,13 +38,16 @@ dependencies:
   popover: ^0.3.0
   image: ^4.1.7
   curved_navigation_bar: ^1.0.3
-  image_picker: ^1.0.7
+  image_picker: ^1.1.0
   photo_manager: ^3.0.0
   photo_view: ^0.14.0
   image_gallery_saver: ^2.0.3
   firebase_core: ^2.29.0
   firebase_auth: ^4.19.1
   cloud_firestore: ^4.16.1
+  firebase_storage: ^11.7.2
+  provider: ^6.1.2
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:

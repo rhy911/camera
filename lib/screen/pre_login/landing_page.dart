@@ -16,9 +16,9 @@ class LandingScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "CAMERA APP",
+              "C A M E R A",
               style: TextStyle(
-                fontSize: 40,
+                fontSize: 60,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
@@ -27,7 +27,7 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(height: 150),
             SizedBox(
               width: 300,
-              height: 50,
+              height: 60,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -42,7 +42,7 @@ class LandingScreen extends StatelessWidget {
                 },
                 child: const Text(
                   "TẠO TÀI KHOẢN",
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 25),
                 ),
               ),
             ),
