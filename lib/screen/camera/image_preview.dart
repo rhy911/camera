@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:Camera/helper/helper_function.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -57,9 +61,11 @@ class _ImagePreviewState extends State<ImagePreview> {
     PhotoManager.requestPermissionExtend().then((PermissionState state) async {
       if (state == PermissionState.authorized) {
         // Save the cropped image to the gallery
+        showLoadingDialog('Saving', context);
         await ImageGallerySaver.saveFile(newFile.path);
 
         if (context.mounted) {
+          hideLoadingDialog(context);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Saved to Gallery'),
@@ -74,14 +80,49 @@ class _ImagePreviewState extends State<ImagePreview> {
     });
   }
 
+  void _shareImageToFireBase(BuildContext context) {
+    showLoadingDialog('Sharing to Gallery', context);
+    FirebaseStorage.instance
+        .ref()
+        .child('user: ${FirebaseAuth.instance.currentUser!.email}')
+        .child('imported images')
+        .child('${DateTime.now().toIso8601String()}.jpg')
+        .putFile(newFile)
+        .then((TaskSnapshot taskSnapshot) {
+      taskSnapshot.ref.getDownloadURL().then((String url) async {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.email)
+            .collection('imports')
+            .add({
+          'image': url,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+        if (context.mounted) {
+          hideLoadingDialog(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Uploaded to Gallery !'),
+              duration:
+                  Duration(seconds: 2), // Change this to your desired duration
+            ),
+          );
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        title: const Text("  I M A G E  P R E V I E W",
-            style: TextStyle(color: Colors.white, fontSize: 25)),
         actions: [
+          IconButton(
+              onPressed: () {
+                _shareImageToFireBase(context);
+              },
+              icon: const Icon(Icons.share_rounded)),
           IconButton(
             onPressed: () {
               _saveImageToGallery(context);

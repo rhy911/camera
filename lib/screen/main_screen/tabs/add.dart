@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:Camera/screen/camera/camera_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:Camera/helper/helper_function.dart';
 
 class AddWidget extends StatefulWidget {
   const AddWidget({super.key});
@@ -14,28 +16,40 @@ class AddWidget extends StatefulWidget {
 }
 
 class _AddWidgetState extends State<AddWidget> {
-  void _showLoadingDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const AlertDialog(
-          content: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 20),
-              Text('Uploading...'),
-            ],
-          ),
-        );
-      },
-    );
-  }
+  Future<void> _importImages() async {
+    final picker = ImagePicker();
+    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      if (mounted) showLoadingDialog('Uploading', context);
 
-  void _hideLoadingDialog() {
-    if (Navigator.canPop(context)) {
-      Navigator.of(context).pop();
+      // Upload the picked image to Firebase Storage
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('user: ${FirebaseAuth.instance.currentUser!.email}')
+          .child('imported images')
+          .child('${DateTime.now().toIso8601String()}.jpg');
+      await ref.putFile(File(pickedFile.path));
+
+      // Get the URL of the uploaded image
+      final url = await ref.getDownloadURL();
+
+      // Store the URL in Firestore
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection('imports')
+          .add({
+        'image': url,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      if (mounted) {
+        hideLoadingDialog(context);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Imported successfully, check your Gallery'),
+          duration: Duration(seconds: 2),
+        ));
+      }
     }
   }
 
@@ -51,70 +65,14 @@ class _AddWidgetState extends State<AddWidget> {
               '  C R E A T E',
             ),
           ),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          body: Padding(
+            padding: const EdgeInsets.only(top: 50, left: 30),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
-                  width: 240,
-                  height: 50,
-                  child: ElevatedButton(
-                      onPressed: () async {
-                        final picker = ImagePicker();
-                        XFile? pickedFile =
-                            await picker.pickImage(source: ImageSource.gallery);
-                        if (pickedFile != null) {
-                          _showLoadingDialog();
-                          // Upload the picked image to Firebase Storage
-                          final ref = FirebaseStorage.instance
-                              .ref()
-                              .child('imported images')
-                              .child('${DateTime.now().toIso8601String()}.jpg');
-                          await ref.putFile(File(pickedFile.path));
-
-                          // Get the URL of the uploaded image
-                          final url = await ref.getDownloadURL();
-
-                          // Store the URL in Firestore
-                          await FirebaseFirestore.instance
-                              .collection('imports')
-                              .add({
-                            'image': url,
-                            'timestamp': FieldValue.serverTimestamp(),
-                          });
-                          _hideLoadingDialog();
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                              content: Text(
-                                  'Imported successfully, check your Gallery'),
-                              duration: Duration(seconds: 2),
-                            ));
-                          }
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 200, 20, 230),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                      ),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.add, color: Colors.white, size: 30),
-                          SizedBox(width: 20),
-                          Text(
-                            'Import',
-                            style: TextStyle(fontSize: 25, color: Colors.white),
-                          ),
-                        ],
-                      )),
-                ),
-                const SizedBox(height: 30),
-                SizedBox(
-                  width: 240,
-                  height: 50,
+                  width: 150,
+                  height: 150,
                   child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -123,20 +81,45 @@ class _AddWidgetState extends State<AddWidget> {
                                 builder: (context) => const CameraApp()));
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color.fromARGB(255, 200, 20, 230),
+                        backgroundColor: Colors.deepPurple,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100),
+                          borderRadius: BorderRadius.circular(30),
                         ),
                       ),
-                      child: const Row(
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.camera_enhance_rounded,
-                              color: Colors.white, size: 30),
-                          SizedBox(width: 20),
+                              color: Colors.white, size: 50),
+                          SizedBox(width: 5),
                           Text(
                             'Take Picture',
-                            style: TextStyle(fontSize: 25, color: Colors.white),
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
+                        ],
+                      )),
+                ),
+                const SizedBox(width: 50),
+                SizedBox(
+                  width: 120,
+                  height: 120,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        _importImages();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add, color: Colors.white, size: 50),
+                          Text(
+                            'Import',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
                           ),
                         ],
                       )),

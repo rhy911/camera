@@ -45,7 +45,7 @@ class _MainScreenState extends State<MainScreen> {
           const Icon(Icons.home),
           const Icon(Icons.photo_library),
           CircleAvatar(
-              radius: 30,
+              radius: 25,
               child: Icon(Icons.add, size: 50, color: Colors.pinkAccent[100])),
           const Icon(Icons.search),
           const Icon(Icons.person),

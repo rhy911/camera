@@ -1,7 +1,7 @@
-import 'package:Camera/components/aspect_ratio.dart';
-import 'package:Camera/components/gestures.dart';
-import 'package:Camera/components/gridlines.dart';
-import 'package:Camera/components/timer.dart';
+import 'package:Camera/components/camera_function/aspect_ratio.dart';
+import 'package:Camera/components/camera_function/gestures.dart';
+import 'package:Camera/components/camera_function/gridlines.dart';
+import 'package:Camera/components/camera_function/timer.dart';
 import 'package:Camera/screen/camera/image_preview.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';

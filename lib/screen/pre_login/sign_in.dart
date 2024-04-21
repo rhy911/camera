@@ -36,12 +36,12 @@ class _SignInWidgetState extends State<SignInWidget> {
       if (context.mounted) {
         Navigator.pop(context);
       }
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException {
       if (context.mounted) {
         //POP LOADING CIRCLE
         Navigator.pop(context);
         //SHOW ERROR MESSAGE
-        displayMessageToUser(e.code, context);
+        displayMessageToUser('Error! Please try again', context);
       }
     }
   }
@@ -56,7 +56,7 @@ class _SignInWidgetState extends State<SignInWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 100, 56, 172),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +83,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                   TextSpan(
                     text: 'Welcome Back!\n',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 45,
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.italic,
@@ -92,7 +92,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                   TextSpan(
                     text: '\nSign In',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 30,
                       fontWeight: FontWeight.w300,
                       fontStyle: FontStyle.italic,
@@ -109,15 +109,15 @@ class _SignInWidgetState extends State<SignInWidget> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(160, 255, 255, 255)),
+                  labelStyle:
+                      const TextStyle(color: Colors.black38, fontSize: 20),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 154, 77, 198),
+                  fillColor: Colors.white54,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
               ),
             ),
             const SizedBox(height: 15),
@@ -128,30 +128,34 @@ class _SignInWidgetState extends State<SignInWidget> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(160, 255, 255, 255)),
+                  labelStyle:
+                      const TextStyle(color: Colors.black38, fontSize: 20),
                   border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.blue, width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 154, 77, 198),
+                  fillColor: Colors.white54,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
                 obscureText: true,
               ),
             ),
             const SizedBox(height: 40),
             SizedBox(
               width: 200,
+              height: 40,
               child: ElevatedButton(
                 onPressed: () {
                   signInUser();
                 },
-                child: const Text(
-                  'Continue   ->',
-                  style: TextStyle(fontSize: 22),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'CONTINUE   ->',
+                  style: TextStyle(fontSize: 25, color: Colors.deepPurple[500]),
                 ),
               ),
             ),

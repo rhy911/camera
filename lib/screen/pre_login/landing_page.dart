@@ -10,16 +10,16 @@ class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 100, 56, 172),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              "C A M E R A",
+              "C A M - E D I T",
               style: TextStyle(
                 fontSize: 60,
-                color: Colors.white,
+                color: Color.fromARGB(176, 0, 0, 0),
                 fontWeight: FontWeight.bold,
                 fontStyle: FontStyle.italic,
               ),
@@ -30,8 +30,12 @@ class LandingScreen extends StatelessWidget {
               height: 60,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.indigoAccent[100],
+                  foregroundColor: Colors.pink[300],
+                  backgroundColor: Colors.purple[100],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  elevation: 5,
                 ),
                 onPressed: () {
                   Navigator.push(
@@ -41,11 +45,12 @@ class LandingScreen extends StatelessWidget {
                   );
                 },
                 child: const Text(
-                  "TẠO TÀI KHOẢN",
-                  style: TextStyle(fontSize: 25),
+                  "REGISTER NOW",
+                  style: TextStyle(fontSize: 30),
                 ),
               ),
             ),
+            const SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.push(
@@ -54,18 +59,20 @@ class LandingScreen extends StatelessWidget {
                 );
               },
               child: RichText(
-                text: const TextSpan(
-                  style: TextStyle(
+                text: TextSpan(
+                  style: const TextStyle(
                     color: Colors.white,
                   ),
                   children: <TextSpan>[
-                    TextSpan(text: 'Đã có tài khoản? '),
+                    const TextSpan(
+                        text: 'Already have an account? ',
+                        style: TextStyle(color: Colors.black)),
                     TextSpan(
-                      text: 'Đăng nhập ngay',
+                      text: ' Login Here!',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontStyle: FontStyle.italic,
-                          color: Color.fromARGB(255, 247, 201, 158)),
+                          color: Colors.deepPurple[900]),
                     ),
                   ],
                 ),

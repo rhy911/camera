@@ -62,9 +62,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     if (userCredential != null && userCredential.user != null) {
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(userCredential.user!.uid)
+          .doc(userCredential.user!.email)
           .set({
-        'email': userCredential.user!.email,
         'uid': userCredential.user!.uid,
       });
     }
@@ -73,7 +72,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 100, 56, 172),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +98,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   TextSpan(
                     text: 'Hello!\n',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 50,
                       fontWeight: FontWeight.w300,
                       fontStyle: FontStyle.italic,
@@ -108,7 +107,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   TextSpan(
                     text: '\nSign Up to get started',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Colors.black87,
                       fontSize: 30,
                       fontWeight: FontWeight.w300,
                       fontStyle: FontStyle.italic,
@@ -117,7 +116,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ],
               ),
             ),
-            const SizedBox(height: 80),
+            const SizedBox(height: 70),
             SizedBox(
               width: 300,
               height: 50,
@@ -125,15 +124,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email Address',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(160, 255, 255, 255)),
+                  labelStyle: const TextStyle(color: Colors.black38),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 154, 77, 198),
+                  fillColor: Colors.white38,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
               ),
             ),
             const SizedBox(height: 15),
@@ -144,17 +142,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(160, 255, 255, 255)),
+                  labelStyle: const TextStyle(color: Colors.black38),
                   border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.blue, width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 154, 77, 198),
+                  fillColor: Colors.white54,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
                 obscureText: true,
               ),
             ),
@@ -166,17 +161,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 controller: _confirmPasswordController,
                 decoration: InputDecoration(
                   labelText: 'Confirm Password',
-                  labelStyle: const TextStyle(
-                      color: Color.fromARGB(160, 255, 255, 255)),
+                  labelStyle: const TextStyle(color: Colors.black38),
                   border: OutlineInputBorder(
-                    borderSide:
-                        const BorderSide(color: Colors.blue, width: 2.0),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
-                  fillColor: const Color.fromARGB(255, 154, 77, 198),
+                  fillColor: Colors.white54,
                 ),
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
                 obscureText: true,
               ),
             ),
@@ -187,9 +179,14 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 onPressed: () {
                   signUpUser();
                 },
-                child: const Text(
-                  'Continue   ->',
-                  style: TextStyle(fontSize: 22),
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child: Text(
+                  'CONTINUE   ->',
+                  style: TextStyle(fontSize: 25, color: Colors.deepPurple[500]),
                 ),
               ),
             ),
