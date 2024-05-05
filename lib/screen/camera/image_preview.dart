@@ -11,9 +11,10 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImagePreview extends StatefulWidget {
-  const ImagePreview(this.file, this.as, this.isRearCamera, {super.key});
+  const ImagePreview(this.file, this.aspectRatio, this.isRearCamera,
+      {super.key});
   final XFile file;
-  final double as;
+  final double aspectRatio;
   final bool isRearCamera;
 
   @override
@@ -41,7 +42,7 @@ class _ImagePreviewState extends State<ImagePreview> {
       }
       // Calculate the target width and height based on the aspect ratio
       int targetWidth = image.width;
-      int targetHeight = (targetWidth / widget.as).round();
+      int targetHeight = (targetWidth / widget.aspectRatio).round();
 
       // Calculate the top left coordinates of the crop rectangle
       int x = 0;

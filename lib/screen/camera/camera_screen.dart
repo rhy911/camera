@@ -1,13 +1,16 @@
-import 'package:Camera/components/camera_function/aspect_ratio.dart';
-import 'package:Camera/components/camera_function/gestures.dart';
-import 'package:Camera/components/camera_function/gridlines.dart';
-import 'package:Camera/components/camera_function/timer.dart';
+import 'package:Camera/components/camera_function/appbar_components/aspect_ratio.dart';
+import 'package:Camera/components/camera_function/appbar_components/flash.dart';
+import 'package:Camera/components/camera_function/body_components/flip_camera.dart';
+import 'package:Camera/components/camera_function/body_components/gestures.dart';
+import 'package:Camera/components/camera_function/appbar_components/gridlines.dart';
+import 'package:Camera/components/camera_function/appbar_components/timer.dart';
+import 'package:Camera/components/camera_function/body_components/take_picture.dart';
+import 'package:Camera/provider/camera_state.dart';
 import 'package:Camera/screen/camera/image_preview.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:Camera/main.dart';
-
-enum Flashmode { auto, off, on }
+import 'package:provider/provider.dart';
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -18,12 +21,6 @@ class CameraApp extends StatefulWidget {
 
 class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   late CameraController _controller;
-  bool _isRearCameraSelected = true;
-
-  Flashmode _flashmode = Flashmode.auto;
-  double _aspectRatio = 9 / 16;
-  bool _onGrid = false;
-  int _timerDuration = 0;
 
   @override
   void initState() {
@@ -76,69 +73,46 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final cameraState = Provider.of<CameraState>(context);
+    final bool isRearCameraSelected = cameraState.isRearCameraSelected;
+    final double aspectRatio = cameraState.aspectRatio;
+    final bool onGrid = cameraState.onGrid;
+    final int timerDuration = cameraState.timerDuration;
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         actions: [
-          Padding(
-            //Aspect ratio button
-            padding: const EdgeInsets.all(10.0),
-            child: MyButton(
-              _aspectRatio,
-              (newAspectRatio) {
-                setState(() {
-                  _aspectRatio = newAspectRatio;
-                });
+          InkWell(
+              onTap: () {
+                Navigator.pop(context);
               },
-            ),
-          ),
-          IconButton(
-            //Flash button
-            padding: const EdgeInsets.all(10),
-            onPressed: () {
-              setState(() {
-                _flashmode = Flashmode
-                    .values[(_flashmode.index + 1) % Flashmode.values.length];
-              });
-            },
-            icon: _flashmode == Flashmode.on
-                ? const Icon(Icons.flash_on_rounded)
-                : _flashmode == Flashmode.off
-                    ? const Icon(Icons.flash_off_rounded)
-                    : const Icon(Icons.flash_auto_rounded),
-          ),
-          IconButton(
-            //Grid button
-            padding: const EdgeInsets.all(10),
-            onPressed: () {
-              setState(() {
-                _onGrid = !_onGrid;
-              });
-            },
-            icon: _onGrid
-                ? const Icon(Icons.grid_on_sharp)
-                : const Icon(Icons.grid_off_sharp),
-          ),
-          Padding(
-            //Timer button
-            padding: const EdgeInsets.all(20.0),
-            child: TimerButton(onDurationChanged: (int duration) {
-              setState(() {
-                _timerDuration = duration;
-              });
-            }),
-          )
+              child: const Icon(Icons.close)),
+          const SizedBox(width: 10),
         ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            //Aspect Ratio button
+            const AspectRatioButton(),
+            //Flash button
+            FlashButton(controller: _controller),
+            //Gridlines button
+            const GridLinesButton(),
+            //Timer button
+            const TimerButton()
+          ],
+        ),
       ),
       body: Stack(children: [
         Gestures(
           controller: _controller,
           child: AspectRatio(
-            aspectRatio: _aspectRatio,
+            aspectRatio: aspectRatio,
             child: ClipRect(
               child: CustomPaint(
-                foregroundPainter: _onGrid ? GridPainter() : null,
+                foregroundPainter: onGrid ? GridPainter() : null,
                 child: FittedBox(
                   fit: BoxFit.cover,
                   child: SizedBox(
@@ -154,92 +128,39 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
         Container(
           alignment: Alignment.bottomCenter,
           margin: const EdgeInsetsDirectional.only(bottom: 80),
-          child: IconButton(
-            onPressed: () async {
-              if (!_controller.value.isInitialized) {
-                return;
-              }
-              if (_controller.value.isTakingPicture) {
-                return;
-              }
-              try {
-                await _controller.setFlashMode(
-                  _flashmode == Flashmode.on
-                      ? FlashMode.always
-                      : _flashmode == Flashmode.off
-                          ? FlashMode.off
-                          : FlashMode.auto,
-                );
-                XFile? file;
-
-                int initialTimer = _timerDuration;
-                await startTimer(_timerDuration, (remainingTime) {
-                  setState(() {
-                    _timerDuration = remainingTime;
-                  });
-                });
-                if (_timerDuration == 0) {
-                  file = await _controller.takePicture();
-                  setState(() {
-                    _timerDuration = initialTimer; // Reset the timer
-                  });
-                }
-                if (context.mounted) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ImagePreview(
-                              file!, _aspectRatio, _isRearCameraSelected)));
-                }
-              } on CameraException catch (e) {
-                debugPrint("Error occured while taking photo : $e");
-                return;
-              }
+          child: TakePictureButton(
+            controller: _controller,
+            onPictureTaken: (file) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ImagePreview(
+                          file, aspectRatio, isRearCameraSelected)));
             },
-            iconSize: 85,
-            icon: const Icon(Icons.circle_outlined),
           ),
         ),
         Container(
           alignment: Alignment.bottomLeft,
           margin: const EdgeInsetsDirectional.only(start: 40, bottom: 90),
-          child: IconButton(
-            onPressed: () async {
-              if (_controller.value.isInitialized) {
-                await _controller.dispose();
-              }
-
+          child: FlipCameraButton(
+            controller: _controller,
+            onCameraFlip: (newController) {
               setState(() {
-                _isRearCameraSelected = !_isRearCameraSelected;
+                _controller = newController;
               });
-
-              CameraDescription selectedCamera =
-                  _isRearCameraSelected ? cameras[0] : cameras[1];
-              _controller = CameraController(
-                selectedCamera,
-                ResolutionPreset.max,
-              );
-              try {
-                await _controller.initialize();
-              } catch (e) {
-                debugPrint('Error initializing camera: $e');
-                // Handle the error as appropriate for your app.
-              }
-
-              if (mounted) {
-                setState(() {});
-              }
             },
-            icon: const Icon(Icons.flip_camera_ios_outlined, size: 50),
-            padding: const EdgeInsets.all(10),
           ),
         ),
-        Container(
-          alignment: Alignment.topCenter,
-          child: _timerDuration != 0
-              ? Text('$_timerDuration',
-                  style: Theme.of(context).primaryTextTheme.bodyMedium)
-              : Container(),
+        Column(
+          children: [
+            const SizedBox(height: 20),
+            Center(
+              child: timerDuration != 0
+                  ? Text('$timerDuration',
+                      style: Theme.of(context).primaryTextTheme.bodyMedium)
+                  : Container(),
+            ),
+          ],
         ),
       ]),
     );

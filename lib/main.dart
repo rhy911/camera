@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Camedit',
       theme: AppTheme.appThemeData(),
       home: const AuthPage(),
     );

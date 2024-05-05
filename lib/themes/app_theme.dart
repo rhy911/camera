@@ -10,6 +10,9 @@ class AppTheme {
             color: Colors.white, fontSize: 70, fontWeight: FontWeight.w200),
       ),
       iconTheme: const IconThemeData(color: Colors.white),
+      popupMenuTheme: const PopupMenuThemeData(
+        color: Colors.black38,
+      ),
       appBarTheme: const AppBarTheme(
         color: Colors.transparent,
         toolbarHeight: 80.0,

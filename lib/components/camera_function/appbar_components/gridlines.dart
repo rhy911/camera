@@ -1,4 +1,28 @@
+import 'package:Camera/provider/camera_state.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class GridLinesButton extends StatefulWidget {
+  const GridLinesButton({super.key});
+
+  @override
+  State<GridLinesButton> createState() => _GridButtonState();
+}
+
+class _GridButtonState extends State<GridLinesButton> {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      padding: const EdgeInsets.all(10),
+      onPressed: () {
+        Provider.of<CameraState>(context, listen: false).toggleGrid();
+      },
+      icon: Provider.of<CameraState>(context).onGrid
+          ? const Icon(Icons.grid_on_sharp)
+          : const Icon(Icons.grid_off_sharp),
+    );
+  }
+}
 
 class GridPainter extends CustomPainter {
   @override

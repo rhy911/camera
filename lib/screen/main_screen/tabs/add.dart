@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:Camera/provider/camera_state.dart';
 import 'package:Camera/screen/camera/camera_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Camera/helper/helper_function.dart';
+import 'package:provider/provider.dart';
 
 class AddWidget extends StatefulWidget {
   const AddWidget({super.key});
@@ -78,7 +80,10 @@ class _AddWidgetState extends State<AddWidget> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const CameraApp()));
+                                builder: (context) => ChangeNotifierProvider(
+                                    create: (BuildContext context) =>
+                                        CameraState(),
+                                    child: const CameraApp())));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepPurple,
