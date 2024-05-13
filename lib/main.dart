@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:Camera/screen/pre_login/authentication.dart';
+import 'package:Camera/route/route.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +37,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Camedit',
-      theme: AppTheme.appThemeData(),
-      home: const AuthPage(),
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.system,
+      onGenerateRoute: AppRoute.generate,
     );
   }
 }

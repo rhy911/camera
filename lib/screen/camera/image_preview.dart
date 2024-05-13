@@ -3,8 +3,6 @@ import 'package:Camera/helper/helper_function.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image/image.dart' as img;
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -13,7 +11,7 @@ import 'package:photo_view/photo_view.dart';
 class ImagePreview extends StatefulWidget {
   const ImagePreview(this.file, this.aspectRatio, this.isRearCamera,
       {super.key});
-  final XFile file;
+  final File file;
   final double aspectRatio;
   final bool isRearCamera;
 
@@ -22,40 +20,9 @@ class ImagePreview extends StatefulWidget {
 }
 
 class _ImagePreviewState extends State<ImagePreview> {
-  late File newFile;
-
-  @override
-  void initState() {
-    super.initState();
-    cropImage();
-  }
-
-  void cropImage() {
-    // Read the image from the file
-    img.Image? image =
-        img.decodeImage(File(widget.file.path).readAsBytesSync());
-
-    if (image != null) {
-      // Flip the image horizontally if isRearCamera is false
-      if (!widget.isRearCamera) {
-        image = img.flipHorizontal(image);
-      }
-      // Calculate the target width and height based on the aspect ratio
-      int targetWidth = image.width;
-      int targetHeight = (targetWidth / widget.aspectRatio).round();
-
-      // Calculate the top left coordinates of the crop rectangle
-      int x = 0;
-      int y = (image.height - targetHeight) ~/ 2;
-
-      // Crop the image
-      img.Image croppedImage = img.copyCrop(image,
-          x: x, y: y, width: targetWidth, height: targetHeight);
-
-      // Save the image to a new file
-      newFile = File(widget.file.path);
-      newFile.writeAsBytesSync(img.encodeJpg(croppedImage));
-    }
+  Future<ImageProvider> _loadImage() async {
+    final bytes = await widget.file.readAsBytes();
+    return MemoryImage(bytes);
   }
 
   void _saveImageToGallery(BuildContext context) {
@@ -63,7 +30,7 @@ class _ImagePreviewState extends State<ImagePreview> {
       if (state == PermissionState.authorized) {
         // Save the cropped image to the gallery
         showLoadingDialog('Saving', context);
-        await ImageGallerySaver.saveFile(newFile.path);
+        await ImageGallerySaver.saveFile(widget.file.path);
 
         if (context.mounted) {
           hideLoadingDialog(context);
@@ -88,7 +55,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         .child('user: ${FirebaseAuth.instance.currentUser!.email}')
         .child('imported images')
         .child('${DateTime.now().toIso8601String()}.jpg')
-        .putFile(newFile)
+        .putFile(widget.file)
         .then((TaskSnapshot taskSnapshot) {
       taskSnapshot.ref.getDownloadURL().then((String url) async {
         await FirebaseFirestore.instance
@@ -115,6 +82,7 @@ class _ImagePreviewState extends State<ImagePreview> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('ImagePreview');
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -134,9 +102,22 @@ class _ImagePreviewState extends State<ImagePreview> {
         ],
       ),
       body: Center(
-        child: PhotoView(
-          imageProvider: FileImage(File(newFile.path)),
-          minScale: PhotoViewComputedScale.contained,
+        child: FutureBuilder<ImageProvider>(
+          future: _loadImage(),
+          builder:
+              (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.error != null) {
+              // Handle error
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return PhotoView(
+                imageProvider: snapshot.data,
+                minScale: PhotoViewComputedScale.contained,
+              );
+            }
+          },
         ),
       ),
     );

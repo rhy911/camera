@@ -24,10 +24,13 @@ class _TakePictureButtonState extends State<TakePictureButton> {
     return IconButton(
       onPressed: () async {
         debugPrint("Take picture button pressed");
+        // Get the current time when the button is pressed
+        DateTime startTime = DateTime.now();
         if (!widget.controller.value.isInitialized ||
             widget.controller.value.isTakingPicture) {
           return;
         }
+
         try {
           final cameraState = Provider.of<CameraState>(context, listen: false);
           int initialTimer = cameraState.timerDuration;
@@ -36,12 +39,15 @@ class _TakePictureButtonState extends State<TakePictureButton> {
           });
 
           if (cameraState.timerDuration == 0) {
-            // Lock the focus to its current value before taking the picture
-            widget.controller.setFocusMode(FocusMode.locked);
             widget.onPictureTaken(await widget.controller.takePicture());
+            // Get the current time when the picture is taken successfully
+            DateTime endTime = DateTime.now();
+
+            // Calculate the difference
+            Duration difference = endTime.difference(startTime);
             debugPrint("Picture taken");
-            // Unlock the focus after taking the picture
-            widget.controller.setFocusMode(FocusMode.auto);
+            debugPrint("Time taken: ${difference.inMilliseconds} ms");
+
             cameraState.setTimer(initialTimer); // Reset the timer
           }
         } on CameraException catch (e) {

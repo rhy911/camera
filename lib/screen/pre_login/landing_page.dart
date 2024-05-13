@@ -1,7 +1,3 @@
-import 'package:Camera/screen/main_screen/main_screen.dart';
-import 'package:Camera/screen/pre_login/sign_in.dart';
-import 'package:Camera/screen/pre_login/sign_up.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -15,14 +11,9 @@ class LandingScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            Text(
               "C A M - E D I T",
-              style: TextStyle(
-                fontSize: 60,
-                color: Color.fromARGB(176, 0, 0, 0),
-                fontWeight: FontWeight.bold,
-                fontStyle: FontStyle.italic,
-              ),
+              style: Theme.of(context).textTheme.headlineLarge,
             ),
             const SizedBox(height: 150),
             SizedBox(
@@ -38,11 +29,7 @@ class LandingScreen extends StatelessWidget {
                   elevation: 5,
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SignUpWidget()),
-                  );
+                  Navigator.pushNamed(context, '/signup');
                 },
                 child: const Text(
                   "REGISTER NOW",
@@ -53,10 +40,7 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const SignInWidget()),
-                );
+                Navigator.pushNamed(context, '/signin');
               },
               child: RichText(
                 text: TextSpan(
@@ -64,15 +48,15 @@ class LandingScreen extends StatelessWidget {
                     color: Colors.white,
                   ),
                   children: <TextSpan>[
-                    const TextSpan(
+                    TextSpan(
                         text: 'Already have an account? ',
-                        style: TextStyle(color: Colors.black)),
+                        style: Theme.of(context).textTheme.bodyMedium),
                     TextSpan(
                       text: ' Login Here!',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
-                          color: Colors.deepPurple[900]),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.purple,
+                          ),
                     ),
                   ],
                 ),
@@ -80,26 +64,6 @@ class LandingScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class AuthCheck extends StatelessWidget {
-  const AuthCheck({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: StreamBuilder<User?>(
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return const MainScreen();
-          } else {
-            return const LandingScreen();
-          }
-        },
-        stream: FirebaseAuth.instance.authStateChanges(),
       ),
     );
   }

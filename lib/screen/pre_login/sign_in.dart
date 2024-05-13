@@ -136,7 +136,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                   filled: true,
                   fillColor: Colors.white54,
                 ),
-                style: const TextStyle(color: Colors.black87, fontSize: 20),
+                style: Theme.of(context).textTheme.bodyMedium,
                 obscureText: true,
               ),
             ),
@@ -154,8 +154,11 @@ class _SignInWidgetState extends State<SignInWidget> {
                   ),
                 ),
                 child: Text(
-                  'CONTINUE   ->',
-                  style: TextStyle(fontSize: 25, color: Colors.deepPurple[500]),
+                  'CONTINUE',
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.copyWith(color: Colors.deepPurple),
                 ),
               ),
             ),

@@ -5,6 +5,7 @@ import 'package:Camera/components/camera_function/body_components/gestures.dart'
 import 'package:Camera/components/camera_function/appbar_components/gridlines.dart';
 import 'package:Camera/components/camera_function/appbar_components/timer.dart';
 import 'package:Camera/components/camera_function/body_components/take_picture.dart';
+import 'package:Camera/functions/crop_image.dart';
 import 'package:Camera/provider/camera_state.dart';
 import 'package:Camera/screen/camera/image_preview.dart';
 import 'package:camera/camera.dart';
@@ -130,18 +131,20 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
           margin: const EdgeInsetsDirectional.only(bottom: 80),
           child: TakePictureButton(
             controller: _controller,
-            onPictureTaken: (file) {
+            onPictureTaken: (file) async {
+              debugPrint("done take picture");
+              var newFile = await cropImage(context, file);
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ImagePreview(
-                          file, aspectRatio, isRearCameraSelected)));
+                          newFile, aspectRatio, isRearCameraSelected)));
             },
           ),
         ),
         Container(
-          alignment: Alignment.bottomLeft,
-          margin: const EdgeInsetsDirectional.only(start: 40, bottom: 90),
+          alignment: Alignment.bottomRight,
+          margin: const EdgeInsetsDirectional.only(end: 40, bottom: 90),
           child: FlipCameraButton(
             controller: _controller,
             onCameraFlip: (newController) {
