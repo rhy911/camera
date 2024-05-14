@@ -6,8 +6,21 @@ class AppTheme {
   static final AppTextStyle _textStyle = AppTextStyle.instance;
   static ThemeData light = ThemeData(
     brightness: Brightness.light,
-    primaryColor: AppColor.primaryColor,
+    primaryColor: AppColor.secondaryColor,
     scaffoldBackgroundColor: AppColor.backgroundLight,
+    iconTheme: const IconThemeData(color: AppColor.iconColor),
+    popupMenuTheme: const PopupMenuThemeData(
+      color: AppColor.popupMenuColor,
+    ),
+    appBarTheme: const AppBarTheme(
+        color: AppColor.appBarColor,
+        toolbarHeight: 80.0,
+        elevation: 0,
+        iconTheme: IconThemeData(color: AppColor.appBarIconColor),
+        titleTextStyle: TextStyle(
+          color: AppColor.secondaryColor,
+          fontSize: 30.0,
+        )),
     textTheme: TextTheme(
       displayLarge: _textStyle.displayLarge,
       displayMedium: _textStyle.displayMedium,
@@ -28,8 +41,21 @@ class AppTheme {
   );
   static ThemeData dark = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: AppColor.secondaryColor,
+    primaryColor: AppColor.primaryColor,
     scaffoldBackgroundColor: AppColor.backgroundDark,
+    iconTheme: const IconThemeData(color: AppColor.iconColor),
+    popupMenuTheme: const PopupMenuThemeData(
+      color: AppColor.popupMenuColor,
+    ),
+    appBarTheme: const AppBarTheme(
+        color: AppColor.appBarColor,
+        toolbarHeight: 80.0,
+        elevation: 0,
+        iconTheme: IconThemeData(color: AppColor.appBarIconColor),
+        titleTextStyle: TextStyle(
+          color: AppColor.primaryTextColor,
+          fontSize: 30.0,
+        )),
     textTheme: TextTheme(
       displayLarge: _textStyle.displayLarge.copyWith(color: AppColor.white),
       displayMedium: _textStyle.displayMedium.copyWith(color: AppColor.white),
@@ -48,6 +74,7 @@ class AppTheme {
       bodySmall: _textStyle.bodySmall.copyWith(color: AppColor.white),
     ),
   );
+
   static ThemeData appThemeData() {
     return ThemeData(
       primaryColor: Colors.black,

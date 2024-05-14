@@ -1,4 +1,5 @@
 import 'package:Camera/helper/helper_function.dart';
+import 'package:Camera/themes/app_color.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,7 @@ class _SignInWidgetState extends State<SignInWidget> {
         Navigator.pop(context);
       }
       if (context.mounted) {
-        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/mainscreen');
       }
     } on FirebaseAuthException {
       if (context.mounted) {
@@ -78,25 +79,15 @@ class _SignInWidgetState extends State<SignInWidget> {
             ),
             const SizedBox(height: 30),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
                     text: 'Welcome Back!\n',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 45,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   TextSpan(
                     text: '\nSign In',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ],
               ),
@@ -109,8 +100,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
-                  labelStyle:
-                      const TextStyle(color: Colors.black38, fontSize: 20),
+                  labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black38,
+                      ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -128,22 +120,22 @@ class _SignInWidgetState extends State<SignInWidget> {
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
-                  labelStyle:
-                      const TextStyle(color: Colors.black38, fontSize: 20),
+                  labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.black38,
+                      ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   filled: true,
                   fillColor: Colors.white54,
                 ),
-                style: Theme.of(context).textTheme.bodyMedium,
+                style: const TextStyle(color: Colors.black87, fontSize: 20),
                 obscureText: true,
               ),
             ),
             const SizedBox(height: 40),
             SizedBox(
               width: 200,
-              height: 40,
               child: ElevatedButton(
                 onPressed: () {
                   signInUser();
@@ -153,13 +145,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
-                  'CONTINUE',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.copyWith(color: Colors.deepPurple),
-                ),
+                child: Text('Continue',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColor.midColor,
+                        )),
               ),
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:Camera/themes/app_color.dart';
 import 'package:flutter/material.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -13,7 +14,7 @@ class LandingScreen extends StatelessWidget {
           children: [
             Text(
               "C A M - E D I T",
-              style: Theme.of(context).textTheme.headlineLarge,
+              style: Theme.of(context).textTheme.displayLarge,
             ),
             const SizedBox(height: 150),
             SizedBox(
@@ -21,15 +22,15 @@ class LandingScreen extends StatelessWidget {
               height: 60,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.pink[300],
-                  backgroundColor: Colors.purple[100],
+                  foregroundColor: AppColor.white,
+                  backgroundColor: AppColor.midColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                   elevation: 5,
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
+                  Navigator.pushReplacementNamed(context, '/signup');
                 },
                 child: const Text(
                   "REGISTER NOW",
@@ -40,7 +41,7 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/signin');
+                Navigator.pushReplacementNamed(context, '/signin');
               },
               child: RichText(
                 text: TextSpan(

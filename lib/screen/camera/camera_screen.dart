@@ -8,10 +8,14 @@ import 'package:Camera/components/camera_function/body_components/take_picture.d
 import 'package:Camera/functions/crop_image.dart';
 import 'package:Camera/provider/camera_state.dart';
 import 'package:Camera/screen/camera/image_preview.dart';
+import 'package:Camera/themes/app_color.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:Camera/main.dart';
 import 'package:provider/provider.dart';
+
+//TODO: Flash turn off before done capturing
+//TODO: Optimize capturing speed
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -80,8 +84,7 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     final bool onGrid = cameraState.onGrid;
     final int timerDuration = cameraState.timerDuration;
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      resizeToAvoidBottomInset: false,
+      backgroundColor: AppColor.black,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         actions: [
@@ -134,11 +137,13 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
             onPictureTaken: (file) async {
               debugPrint("done take picture");
               var newFile = await cropImage(context, file);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ImagePreview(
-                          newFile, aspectRatio, isRearCameraSelected)));
+              if (mounted) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ImagePreview(
+                            newFile, aspectRatio, isRearCameraSelected)));
+              }
             },
           ),
         ),
@@ -156,11 +161,14 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
         ),
         Column(
           children: [
-            const SizedBox(height: 20),
+            const SizedBox(height: 150),
             Center(
               child: timerDuration != 0
                   ? Text('$timerDuration',
-                      style: Theme.of(context).primaryTextTheme.bodyMedium)
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayLarge
+                          ?.copyWith(fontSize: 80))
                   : Container(),
             ),
           ],

@@ -1,4 +1,5 @@
 import 'package:Camera/helper/helper_function.dart';
+import 'package:Camera/themes/app_color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         //POP LOADING CIRCLE
         if (context.mounted) {
           Navigator.pop(context);
-          Navigator.pop(context);
+          Navigator.pushReplacementNamed(context, '/mainscreen');
         }
       } on FirebaseAuthException catch (e) {
         if (context.mounted) {
@@ -93,25 +94,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               ],
             ),
             RichText(
-              text: const TextSpan(
+              text: TextSpan(
                 children: <TextSpan>[
                   TextSpan(
                     text: 'Hello!\n',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 50,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: Theme.of(context).textTheme.displayMedium,
                   ),
                   TextSpan(
                     text: '\nSign Up to get started',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.italic,
-                    ),
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ],
               ),
@@ -184,10 +175,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                child: Text(
-                  'CONTINUE   ->',
-                  style: TextStyle(fontSize: 25, color: Colors.deepPurple[500]),
-                ),
+                child: Text('Continue',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: AppColor.midColor,
+                        )),
               ),
             ),
           ],

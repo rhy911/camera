@@ -12,7 +12,7 @@ class Library extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PopScope(canPop: false, child: Scaffold(body: ImageGrid()));
+    return const Scaffold(body: ImageGrid());
   }
 }
 
@@ -102,7 +102,7 @@ class _ImageGridState extends State<ImageGrid> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.only(bottom: 80),
         child: CustomScrollView(
@@ -114,9 +114,7 @@ class _ImageGridState extends State<ImageGrid> {
               toolbarHeight: 80.0,
               title: const Text(
                 ' G A L L E R Y',
-                style: TextStyle(fontStyle: FontStyle.italic),
               ),
-              automaticallyImplyLeading: false,
               floating: true,
               snap: true,
             ),

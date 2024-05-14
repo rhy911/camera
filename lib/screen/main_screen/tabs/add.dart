@@ -1,14 +1,12 @@
 import 'dart:io';
 
-import 'package:Camera/provider/camera_state.dart';
-import 'package:Camera/screen/camera/camera_screen.dart';
+import 'package:Camera/themes/app_color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:Camera/helper/helper_function.dart';
-import 'package:provider/provider.dart';
 
 class AddWidget extends StatefulWidget {
   const AddWidget({super.key});
@@ -57,81 +55,74 @@ class _AddWidgetState extends State<AddWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            title: const Text(
-              '  C R E A T E',
-            ),
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          title: const Text(
+            '  C R E A T E',
           ),
-          body: Padding(
-            padding: const EdgeInsets.only(top: 50, left: 30),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ChangeNotifierProvider(
-                                    create: (BuildContext context) =>
-                                        CameraState(),
-                                    child: const CameraApp())));
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 50, left: 30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 150,
+                height: 150,
+                child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/camera',
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.midColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.camera_enhance_rounded,
-                              color: Colors.white, size: 50),
-                          SizedBox(width: 5),
-                          Text(
-                            'Take Picture',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ],
-                      )),
-                ),
-                const SizedBox(width: 50),
-                SizedBox(
-                  width: 120,
-                  height: 120,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        _importImages();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.camera_enhance_rounded,
+                            color: Colors.white, size: 50),
+                        SizedBox(width: 5),
+                        Text(
+                          'Take Picture',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
+                      ],
+                    )),
+              ),
+              const SizedBox(width: 50),
+              SizedBox(
+                width: 120,
+                height: 120,
+                child: ElevatedButton(
+                    onPressed: () {
+                      _importImages();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.midColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
                       ),
-                      child: const Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add, color: Colors.white, size: 50),
-                          Text(
-                            'Import',
-                            style: TextStyle(fontSize: 20, color: Colors.white),
-                          ),
-                        ],
-                      )),
-                ),
-              ],
-            ),
-          )),
-    );
+                    ),
+                    child: const Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.add, color: Colors.white, size: 50),
+                        Text(
+                          'Import',
+                          style: TextStyle(fontSize: 20, color: Colors.white),
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          ),
+        ));
   }
 }

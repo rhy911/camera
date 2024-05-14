@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:Camera/helper/helper_function.dart';
+import 'package:Camera/themes/app_color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
+
+//TODO: Image Quality is not good, need to fix it
 
 class ImagePreview extends StatefulWidget {
   const ImagePreview(this.file, this.aspectRatio, this.isRearCamera,
@@ -84,7 +87,8 @@ class _ImagePreviewState extends State<ImagePreview> {
   Widget build(BuildContext context) {
     debugPrint('ImagePreview');
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: AppColor.black,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         actions: [
           IconButton(
@@ -101,24 +105,21 @@ class _ImagePreviewState extends State<ImagePreview> {
           const SizedBox(width: 5),
         ],
       ),
-      body: Center(
-        child: FutureBuilder<ImageProvider>(
-          future: _loadImage(),
-          builder:
-              (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.error != null) {
-              // Handle error
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return PhotoView(
-                imageProvider: snapshot.data,
-                minScale: PhotoViewComputedScale.contained,
-              );
-            }
-          },
-        ),
+      body: FutureBuilder<ImageProvider>(
+        future: _loadImage(),
+        builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.error != null) {
+            // Handle error
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return PhotoView(
+              imageProvider: snapshot.data,
+              minScale: PhotoViewComputedScale.contained,
+            );
+          }
+        },
       ),
     );
   }

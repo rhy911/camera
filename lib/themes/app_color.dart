@@ -9,13 +9,11 @@ class AppColor {
   static const Color black = Colors.black87;
   static const Color white = Colors.white70;
   static const Color transparent = Colors.transparent;
-
   static const Color primaryTextColor = Colors.white;
+
   static const Color iconColor = Colors.white;
+  static const Color vibrantColor = Color(0xFFE63946);
   static const Color popupMenuColor = Colors.black38;
   static const Color appBarColor = Colors.transparent;
-  static const Color appBarTextColor = Colors.black;
   static const Color appBarIconColor = Colors.white;
-  static const Color appBarActionsIconColor = Colors.white;
-  static const Color appBarTitleColor = Colors.black;
 }

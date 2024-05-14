@@ -8,7 +8,6 @@ class AppTextStyle {
     color: AppColor.black,
     fontSize: 57,
     fontWeight: FontWeight.bold,
-    fontStyle: FontStyle.italic,
   );
   TextStyle displayMedium = const TextStyle(
     color: AppColor.black,
@@ -51,11 +50,11 @@ class AppTextStyle {
   );
   TextStyle labelLarge = const TextStyle(
     color: AppColor.black,
-    fontSize: 14,
+    fontSize: 20,
   );
   TextStyle labelMedium = const TextStyle(
     color: AppColor.black,
-    fontSize: 12,
+    fontSize: 18,
   );
   TextStyle labelSmall = const TextStyle(
     color: AppColor.black,
@@ -63,7 +62,7 @@ class AppTextStyle {
   );
   TextStyle bodyLarge = const TextStyle(
     color: AppColor.black,
-    fontSize: 16,
+    fontSize: 20,
   );
   TextStyle bodyMedium = const TextStyle(
     color: AppColor.black,
