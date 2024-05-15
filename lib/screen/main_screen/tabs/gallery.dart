@@ -1,8 +1,8 @@
+import 'package:Camera/functions/delete_image.dart';
 import 'package:Camera/screen/editing/editing_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -110,6 +110,7 @@ class _ImageGridState extends State<ImageGrid> {
           controller: _scrollController,
           slivers: <Widget>[
             SliverAppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               toolbarHeight: 80.0,
               title: const Text(
@@ -191,12 +192,12 @@ class ImageView extends StatelessWidget {
       {super.key,
       required this.imageUrls,
       required this.initialIndex,
-      required this.documentIds,
-      required this.onImageDeleted});
+      this.documentIds,
+      this.onImageDeleted});
   final List<String> imageUrls;
-  final List<String> documentIds;
+  final List<String>? documentIds;
   final int initialIndex;
-  final Function(int) onImageDeleted;
+  final Function(int)? onImageDeleted;
 
   @override
   Widget build(BuildContext context) {
@@ -244,8 +245,8 @@ class ImageView extends StatelessWidget {
 
               if (delete == true) {
                 await deleteImage(
-                    imageUrls[initialIndex], documentIds[initialIndex]);
-                onImageDeleted(initialIndex);
+                    imageUrls[initialIndex], documentIds![initialIndex]);
+                onImageDeleted!(initialIndex);
                 if (context.mounted) Navigator.pop(context);
               }
             },
@@ -268,23 +269,4 @@ class ImageView extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<void> deleteImage(String imageUrl, String documentId) async {
-  // Create a reference to the file to delete
-  FirebaseStorage storage = FirebaseStorage.instance;
-  Reference ref = storage.refFromURL(imageUrl);
-
-  // Delete the file
-  await ref.delete();
-
-  // Delete the URL from Firestore
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
-  DocumentReference docRef = firestore
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser?.email)
-      .collection('imports')
-      .doc(documentId);
-
-  await docRef.delete();
 }

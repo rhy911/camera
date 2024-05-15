@@ -30,7 +30,7 @@ class LandingScreen extends StatelessWidget {
                   elevation: 5,
                 ),
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/signup');
+                  Navigator.pushNamed(context, '/signup');
                 },
                 child: const Text(
                   "REGISTER NOW",
@@ -41,7 +41,7 @@ class LandingScreen extends StatelessWidget {
             const SizedBox(height: 10),
             TextButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/signin');
+                Navigator.pushNamed(context, '/signin');
               },
               child: RichText(
                 text: TextSpan(

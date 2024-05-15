@@ -10,6 +10,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:photo_view/photo_view.dart';
 
 //TODO: Image Quality is not good, need to fix it
+//TODO: Implement another way to delete in grid view
 
 class ImagePreview extends StatefulWidget {
   const ImagePreview(this.file, this.aspectRatio, this.isRearCamera,

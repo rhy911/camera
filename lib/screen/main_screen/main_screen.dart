@@ -1,6 +1,6 @@
 import 'package:Camera/screen/main_screen/tabs/add.dart';
-import 'package:Camera/screen/main_screen/tabs/home.dart';
 import 'package:Camera/screen/main_screen/tabs/gallery.dart';
+import 'package:Camera/screen/main_screen/tabs/home.dart';
 import 'package:Camera/screen/main_screen/tabs/profile.dart';
 import 'package:Camera/screen/main_screen/tabs/search.dart';
 import 'package:Camera/themes/app_color.dart';
@@ -48,10 +48,10 @@ class _MainScreenState extends State<MainScreen> {
             const Icon(Icons.home),
             const Icon(Icons.photo_library),
             CircleAvatar(
-                radius: 25,
-                backgroundColor: Theme.of(context).primaryColor,
+                radius: 23,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: const Icon(Icons.add,
-                    size: 50, color: AppColor.vibrantColor)),
+                    size: 30, color: AppColor.vibrantColor)),
             const Icon(Icons.search),
             const Icon(Icons.person),
           ],

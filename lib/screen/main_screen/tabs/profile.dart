@@ -11,6 +11,7 @@ class ProfileScreen extends StatelessWidget {
       child: MaterialButton(
         onPressed: () {
           FirebaseAuth.instance.signOut();
+          Navigator.pushReplacementNamed(context, '/start');
         },
         color: Colors.red,
         textColor: Colors.white,

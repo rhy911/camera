@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 //TODO: Flash turn off before done capturing
 //TODO: Optimize capturing speed
+//TODO: Try to use camera plugin instead of camera package
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
