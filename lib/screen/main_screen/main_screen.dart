@@ -24,10 +24,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    const Home(),
-    const Library(),
-    const AddWidget(),
+    const HomePage(),
     const Search(),
+    const AddWidget(),
+    const Library(),
     const ProfileScreen(),
   ];
 
@@ -46,13 +46,13 @@ class _MainScreenState extends State<MainScreen> {
           onTap: navigateBottomBar,
           items: [
             const Icon(Icons.home),
-            const Icon(Icons.photo_library),
+            const Icon(Icons.search),
             CircleAvatar(
                 radius: 23,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 child: const Icon(Icons.add,
                     size: 30, color: AppColor.vibrantColor)),
-            const Icon(Icons.search),
+            const Icon(Icons.photo_library),
             const Icon(Icons.person),
           ],
           animationDuration: const Duration(milliseconds: 300),

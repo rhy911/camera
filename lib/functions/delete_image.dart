@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 Future<void> deleteImage(String imageUrl, String documentId) async {
@@ -12,11 +11,7 @@ Future<void> deleteImage(String imageUrl, String documentId) async {
 
   // Delete the URL from Firestore
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  DocumentReference docRef = firestore
-      .collection('users')
-      .doc(FirebaseAuth.instance.currentUser?.email)
-      .collection('imports')
-      .doc(documentId);
+  DocumentReference docRef = firestore.collection('imports').doc(documentId);
 
   await docRef.delete();
 }

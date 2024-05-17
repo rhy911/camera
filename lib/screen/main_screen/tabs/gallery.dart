@@ -1,11 +1,8 @@
-import 'package:Camera/functions/delete_image.dart';
-import 'package:Camera/screen/editing/editing_screen.dart';
+import 'package:Camera/components/image_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 class Library extends StatelessWidget {
   const Library({super.key});
@@ -37,37 +34,52 @@ class _ImageGridState extends State<ImageGrid> {
       _isLoading = true;
     });
 
-    Query query = FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.email)
-        .collection('imports')
-        .orderBy('timestamp', descending: true)
-        .limit(itemsPerPage);
+    try {
+      final userEmail = FirebaseAuth.instance.currentUser!.email;
+      debugPrint('Current user email: $userEmail');
 
-    if (_lastDocument != null) {
-      query = query.startAfterDocument(_lastDocument!);
-    }
-    final querySnapshot = await query.get();
+      Query query = FirebaseFirestore.instance
+          .collection('imports')
+          .where('fromUser', isEqualTo: userEmail)
+          .orderBy('timestamp', descending: true)
+          .limit(itemsPerPage);
 
-    final List<String> newImageUrls = querySnapshot.docs
-        .map((doc) => (doc.data() as Map<String, dynamic>)['image'] as String)
-        .toList();
-    final List<String> newDocumentIds =
-        querySnapshot.docs.map((doc) => doc.id).toList();
-
-    debugPrint('Fetched ${newImageUrls.length} image URLs from Firestore');
-
-    setState(() {
-      imageUrls.addAll(newImageUrls);
-      documentIds.addAll(newDocumentIds);
-      _isLoading = false;
-    });
-
-    if (querySnapshot.docs.isNotEmpty) {
-      _lastDocument = querySnapshot.docs.last;
-      if (newImageUrls.length == itemsPerPage) {
-        _fetchAssets();
+      if (_lastDocument != null) {
+        query = query.startAfterDocument(_lastDocument!);
       }
+
+      final querySnapshot = await query.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final List<String> newImageUrls = querySnapshot.docs
+            .map((doc) =>
+                (doc.data() as Map<String, dynamic>)['image'] as String)
+            .toList();
+        final List<String> newDocumentIds =
+            querySnapshot.docs.map((doc) => doc.id).toList();
+
+        print('Fetched ${newImageUrls.length} image URLs from Firestore');
+
+        setState(() {
+          imageUrls.addAll(newImageUrls);
+          documentIds.addAll(newDocumentIds);
+          _isLoading = false;
+          _lastDocument = querySnapshot.docs.last;
+        });
+
+        if (newImageUrls.length == itemsPerPage) {
+          _fetchAssets();
+        }
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      print('Error fetching assets: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -131,7 +143,7 @@ class _ImageGridState extends State<ImageGrid> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => ImageView(
+                          builder: (context) => ImageGaleryView(
                             imageUrls: imageUrls,
                             initialIndex: index,
                             documentIds: documentIds,
@@ -169,7 +181,7 @@ class ImageTap extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 1.0),
+          border: Border.all(color: Colors.white, width: 2.0),
         ),
         child: InkWell(
           onTap: onTap,
@@ -184,89 +196,5 @@ class ImageTap extends StatelessWidget {
             ],
           ),
         ));
-  }
-}
-
-class ImageView extends StatelessWidget {
-  const ImageView(
-      {super.key,
-      required this.imageUrls,
-      required this.initialIndex,
-      this.documentIds,
-      this.onImageDeleted});
-  final List<String> imageUrls;
-  final List<String>? documentIds;
-  final int initialIndex;
-  final Function(int)? onImageDeleted;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditingScreen(
-                    image: Image.network(imageUrls[initialIndex]),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.edit),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              final bool? delete = await showDialog<bool>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Delete Image'),
-                    content: const Text(
-                        'Are you sure you want to delete this image?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  );
-                },
-              );
-
-              if (delete == true) {
-                await deleteImage(
-                    imageUrls[initialIndex], documentIds![initialIndex]);
-                onImageDeleted!(initialIndex);
-                if (context.mounted) Navigator.pop(context);
-              }
-            },
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: PhotoViewGallery.builder(
-        itemCount: imageUrls.length,
-        builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
-          child: imageUrls[index].isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : PhotoView(
-                  imageProvider: CachedNetworkImageProvider(imageUrls[index]),
-                  minScale: PhotoViewComputedScale.contained,
-                ),
-        ),
-        pageController: PageController(initialPage: initialIndex),
-        enableRotation: true,
-      ),
-    );
   }
 }

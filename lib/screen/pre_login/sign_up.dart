@@ -65,6 +65,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           .collection('users')
           .doc(userCredential.user!.email)
           .set({
+        'email': userCredential.user!.email,
         'uid': userCredential.user!.uid,
       });
     }

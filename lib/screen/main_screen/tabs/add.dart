@@ -34,13 +34,10 @@ class _AddWidgetState extends State<AddWidget> {
       final url = await ref.getDownloadURL();
 
       // Store the URL in Firestore
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
-          .collection('imports')
-          .add({
+      await FirebaseFirestore.instance.collection('imports').add({
         'image': url,
         'timestamp': FieldValue.serverTimestamp(),
+        'fromUser': FirebaseAuth.instance.currentUser!.email,
       });
 
       if (mounted) {
@@ -57,6 +54,7 @@ class _AddWidgetState extends State<AddWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
           title: const Text(
             '  C R E A T E',
