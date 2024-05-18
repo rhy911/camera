@@ -1,5 +1,9 @@
-import 'package:Camera/functions/delete_image.dart';
-import 'package:Camera/screen/editing/editing_screen.dart';
+import 'dart:io';
+
+import 'package:Camera/features/editor/domain/entities/delete_image.dart';
+import 'package:Camera/features/editor/domain/entities/download_image.dart';
+import 'package:Camera/features/editor/domain/entities/share_to_firebase.dart';
+import 'package:Camera/features/editor/presentation/pages/editing_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -46,7 +50,6 @@ class _ImageViewState extends State<ImageView> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,10 +84,20 @@ class _ImageViewState extends State<ImageView> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              TextButton(onPressed: () {}, child: const Text('Pin')),
               TextButton(
-                  onPressed: () {
-                   
+                  onPressed: () async {
+                    File imageFile = await urlToFile(
+                        (widget.image[_currentIndex] as CachedNetworkImage)
+                            .imageUrl);
+                    shareImageToFireBase(context, imageFile);
+                  },
+                  child: const Text('Pin')),
+              TextButton(
+                  onPressed: () async {
+                    File imageFile = await urlToFile(
+                        (widget.image[_currentIndex] as CachedNetworkImage)
+                            .imageUrl);
+                    saveImageToGallery(context, imageFile.path);
                   },
                   child: const Text('Save')),
             ],

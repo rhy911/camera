@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:Camera/route/route.dart';
+import 'package:Camera/config/route/route.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:Camera/themes/app_theme.dart';
-import 'package:Camera/firebase/firebase_options.dart';
+import 'package:Camera/config/themes/app_theme.dart';
+import 'package:Camera/core/data/firebase/firebase_options.dart';
 
 late List<CameraDescription> cameras;
 Future<void> main() async {
