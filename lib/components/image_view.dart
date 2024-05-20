@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
 import 'package:Camera/features/editor/domain/entities/delete_image.dart';
 import 'package:Camera/features/editor/domain/entities/download_image.dart';
 import 'package:Camera/features/editor/domain/entities/share_to_firebase.dart';
-import 'package:Camera/features/editor/presentation/pages/editing_screen.dart';
+import 'package:Camera/features/editor/presentation/editing_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -143,33 +144,20 @@ class ImageGaleryView extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () async {
-              final bool? delete = await showDialog<bool>(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('Delete Image'),
-                    content: const Text(
-                        'Are you sure you want to delete this image?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, false),
-                        child: const Text('Cancel'),
-                      ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context, true),
-                        child: const Text('Delete'),
-                      ),
-                    ],
-                  );
-                },
-              );
-
-              if (delete == true) {
-                await deleteImage(
-                    imageUrls[initialIndex], documentIds![initialIndex]);
-                onImageDeleted!(initialIndex);
-                if (context.mounted) Navigator.pop(context);
-              }
+              showConfirmationDialog(context,
+                      title: 'Delete Image',
+                      description:
+                          'Are you sure you want to delete this image?',
+                      leftText: 'Cancle',
+                      rightText: 'Delete')
+                  .then((value) {
+                if (value == true) {
+                  deleteImage(
+                      imageUrls[initialIndex], documentIds![initialIndex]);
+                  onImageDeleted!(initialIndex);
+                  if (context.mounted) Navigator.pop(context);
+                }
+              });
             },
           ),
           const SizedBox(width: 10),

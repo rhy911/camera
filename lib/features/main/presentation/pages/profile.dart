@@ -1,3 +1,4 @@
+import 'package:Camera/components/theme_switch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           FirebaseAuth.instance.currentUser!.email!,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
+        const ThemeSwitch()
       ],
     ));
   }

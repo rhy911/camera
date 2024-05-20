@@ -6,7 +6,7 @@ import 'package:Camera/features/camera/domain/entities/appbar_components/gridlin
 import 'package:Camera/features/camera/domain/entities/appbar_components/timer.dart';
 import 'package:Camera/features/camera/domain/entities/body_components/take_picture.dart';
 import 'package:Camera/features/editor/domain/entities/crop_image.dart';
-import 'package:Camera/features/camera/presentation/provider/camera_state.dart';
+import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:Camera/features/camera/presentation/pages/image_preview.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:camera/camera.dart';

@@ -116,7 +116,7 @@ class _ImageGridState extends State<ImageGrid> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.only(left: 3, right: 3, bottom: 80),
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
@@ -181,7 +181,8 @@ class ImageTap extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.white, width: 2.0),
+          border: Border.all(
+              color: Theme.of(context).scaffoldBackgroundColor, width: 1.0),
         ),
         child: InkWell(
           onTap: onTap,

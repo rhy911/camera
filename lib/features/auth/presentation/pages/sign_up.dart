@@ -1,5 +1,5 @@
-import 'package:Camera/core/utils/helper/helper_function.dart';
 import 'package:Camera/config/themes/app_color.dart';
+import 'package:Camera/core/utils/helper/message_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

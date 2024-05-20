@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Camera/features/camera/presentation/provider/camera_state.dart';
+import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';

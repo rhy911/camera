@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Camera/core/utils/helper/helper_function.dart';
+import 'package:Camera/core/utils/helper/loading_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:photo_manager/photo_manager.dart';

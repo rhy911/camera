@@ -1,5 +1,5 @@
 import 'package:Camera/features/camera/domain/entities/appbar_components/timer.dart';
-import 'package:Camera/features/camera/presentation/provider/camera_state.dart';
+import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

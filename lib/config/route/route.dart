@@ -1,7 +1,7 @@
-import 'package:Camera/features/camera/presentation/provider/camera_state.dart';
+import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:Camera/config/route/routes_name.dart';
 import 'package:Camera/features/camera/presentation/pages/camera_screen.dart';
-import 'package:Camera/features/main/widgets/main_screen.dart';
+import 'package:Camera/features/main/presentation/main_screen.dart';
 import 'package:Camera/features/auth/presentation/widgets/authentication.dart';
 import 'package:Camera/features/auth/presentation/pages/landing_page.dart';
 import 'package:Camera/features/auth/presentation/pages/sign_in.dart';

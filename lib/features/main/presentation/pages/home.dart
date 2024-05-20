@@ -96,11 +96,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: Padding(
-        padding: const EdgeInsets.only(bottom: 70),
-        child: CustomScrollView(
+    return Padding(
+      padding: const EdgeInsets.only(left: 5.0, right: 5.0, bottom: 80),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           cacheExtent: 9999, // Keep items in memory for a longer duration
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
               childCount: images.length,
               itemBuilder: (BuildContext context, int index) {
                 return Padding(
-                  padding: const EdgeInsets.all(4.0),
+                  padding: const EdgeInsets.all(5.0),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(10.0),
                       child: InkWell(

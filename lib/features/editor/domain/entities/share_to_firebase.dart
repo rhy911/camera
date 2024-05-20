@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Camera/core/utils/helper/helper_function.dart';
+import 'package:Camera/core/utils/helper/loading_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
