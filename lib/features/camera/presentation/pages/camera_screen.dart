@@ -5,7 +5,7 @@ import 'package:Camera/features/camera/domain/entities/body_components/gestures.
 import 'package:Camera/features/camera/domain/entities/appbar_components/gridlines.dart';
 import 'package:Camera/features/camera/domain/entities/appbar_components/timer.dart';
 import 'package:Camera/features/camera/domain/entities/body_components/take_picture.dart';
-import 'package:Camera/features/editor/domain/entities/crop_image.dart';
+import 'package:Camera/components/crop_image.dart';
 import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:Camera/features/camera/presentation/pages/image_preview.dart';
 import 'package:Camera/config/themes/app_color.dart';

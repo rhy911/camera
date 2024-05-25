@@ -6,9 +6,8 @@ class AppTheme {
   static final AppTextStyle _textStyle = AppTextStyle.instance;
   static ThemeData light = ThemeData(
     brightness: Brightness.light,
-    primaryColor: AppColor.secondaryColor,
+    primaryColor: AppColor.primaryLight,
     scaffoldBackgroundColor: AppColor.backgroundLight,
-    iconTheme: const IconThemeData(color: AppColor.iconColor),
     popupMenuTheme: const PopupMenuThemeData(
       color: AppColor.popupMenuColor,
     ),
@@ -16,9 +15,9 @@ class AppTheme {
         color: AppColor.appBarColor,
         toolbarHeight: 80.0,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColor.appBarIconColor),
+        iconTheme: IconThemeData(color: AppColor.white),
         titleTextStyle: TextStyle(
-          color: AppColor.secondaryColor,
+          color: AppColor.primaryDark,
           fontSize: 30.0,
         )),
     textTheme: TextTheme(
@@ -41,7 +40,7 @@ class AppTheme {
   );
   static ThemeData dark = ThemeData(
     brightness: Brightness.dark,
-    primaryColor: AppColor.primaryColor,
+    primaryColor: AppColor.primaryDark,
     scaffoldBackgroundColor: AppColor.backgroundDark,
     iconTheme: const IconThemeData(color: AppColor.iconColor),
     popupMenuTheme: const PopupMenuThemeData(
@@ -51,9 +50,8 @@ class AppTheme {
         color: AppColor.appBarColor,
         toolbarHeight: 80.0,
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColor.appBarIconColor),
         titleTextStyle: TextStyle(
-          color: AppColor.primaryTextColor,
+          color: AppColor.primaryLight,
           fontSize: 30.0,
         )),
     textTheme: TextTheme(
@@ -74,27 +72,4 @@ class AppTheme {
       bodySmall: _textStyle.bodySmall.copyWith(color: AppColor.white),
     ),
   );
-
-  static ThemeData appThemeData() {
-    return ThemeData(
-      primaryColor: Colors.black,
-      scaffoldBackgroundColor: Colors.pink[100],
-      primaryTextTheme: const TextTheme(
-        bodyMedium: TextStyle(
-            color: Colors.white, fontSize: 70, fontWeight: FontWeight.w200),
-      ),
-      iconTheme: const IconThemeData(color: Colors.white),
-      popupMenuTheme: const PopupMenuThemeData(
-        color: Colors.black38,
-      ),
-      appBarTheme: const AppBarTheme(
-        color: Colors.transparent,
-        toolbarHeight: 80.0,
-        elevation: 0,
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 30.0),
-        iconTheme: IconThemeData(color: Colors.white),
-        actionsIconTheme: IconThemeData(color: Colors.white),
-      ),
-    );
-  }
 }

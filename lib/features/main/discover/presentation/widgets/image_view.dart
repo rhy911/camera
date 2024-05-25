@@ -1,10 +1,7 @@
 import 'dart:io';
 
-import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
-import 'package:Camera/features/editor/domain/entities/delete_image.dart';
-import 'package:Camera/features/editor/domain/entities/download_image.dart';
-import 'package:Camera/features/editor/domain/entities/share_to_firebase.dart';
-import 'package:Camera/features/editor/presentation/editing_screen.dart';
+import 'package:Camera/components/download_image.dart';
+import 'package:Camera/components/share_to_firebase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -104,77 +101,6 @@ class _ImageViewState extends State<ImageView> {
             ],
           ),
         ],
-      ),
-    );
-  }
-}
-
-class ImageGaleryView extends StatelessWidget {
-  const ImageGaleryView(
-      {super.key,
-      required this.imageUrls,
-      required this.initialIndex,
-      this.documentIds,
-      this.onImageDeleted});
-  final List<String> imageUrls;
-  final List<String>? documentIds;
-  final int initialIndex;
-  final Function(int)? onImageDeleted;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditingScreen(
-                    image: Image.network(imageUrls[initialIndex]),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.edit),
-          ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () async {
-              showConfirmationDialog(context,
-                      title: 'Delete Image',
-                      description:
-                          'Are you sure you want to delete this image?',
-                      leftText: 'Cancle',
-                      rightText: 'Delete')
-                  .then((value) {
-                if (value == true) {
-                  deleteImage(
-                      imageUrls[initialIndex], documentIds![initialIndex]);
-                  onImageDeleted!(initialIndex);
-                  if (context.mounted) Navigator.pop(context);
-                }
-              });
-            },
-          ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: PhotoViewGallery.builder(
-        itemCount: imageUrls.length,
-        builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
-          child: imageUrls[index].isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : PhotoView(
-                  imageProvider: CachedNetworkImageProvider(imageUrls[index]),
-                  minScale: PhotoViewComputedScale.contained,
-                ),
-        ),
-        pageController: PageController(initialPage: initialIndex),
-        enableRotation: true,
       ),
     );
   }

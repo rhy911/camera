@@ -1,7 +1,27 @@
+import 'package:Camera/api/connect_api.dart';
+import 'package:Camera/models/user_mode.dart';
 import 'package:flutter/material.dart';
 
-class Search extends StatelessWidget {
+class Search extends StatefulWidget {
   const Search({super.key});
+
+  @override
+  State<Search> createState() => _SearchState();
+}
+
+class _SearchState extends State<Search> {
+  List<UserModel> dataUser = [];
+  initData() async {
+    Api api = Api();
+    await api.getApi();
+    dataUser = api.dataUser;
+  }
+
+  @override
+  void initState() {
+    initData();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +57,16 @@ class Search extends StatelessWidget {
                       fillColor: Colors.white70,
                     ),
                     style: Theme.of(context).textTheme.labelMedium),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(dataUser[index].firstName ?? "0"),
+                    subtitle: Text(dataUser[index].address?.country ?? "0"),
+                  );
+                },
+                itemCount: dataUser.length,
               )
             ],
           ),

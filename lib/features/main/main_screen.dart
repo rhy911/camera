@@ -1,8 +1,8 @@
-import 'package:Camera/features/main/presentation/pages/add.dart';
-import 'package:Camera/features/main/presentation/pages/gallery.dart';
-import 'package:Camera/features/main/presentation/pages/home.dart';
-import 'package:Camera/features/main/presentation/pages/profile.dart';
-import 'package:Camera/features/main/presentation/pages/search.dart';
+import 'package:Camera/features/main/add/presentation/pages/add.dart';
+import 'package:Camera/features/main/gallery/presentation/pages/gallery.dart';
+import 'package:Camera/features/main/discover/presentation/pages/discover.dart';
+import 'package:Camera/features/main/profile/presentation/pages/profile.dart';
+import 'package:Camera/features/main/search/presentation/pages/search.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -24,10 +24,10 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   final List<Widget> _widgetOptions = <Widget>[
-    const HomePage(),
+    const DiscoverPage(),
     const Search(),
     const AddWidget(),
-    const Library(),
+    const Gallery(),
     const ProfileScreen(),
   ];
 
@@ -41,19 +41,15 @@ class _MainScreenState extends State<MainScreen> {
         bottomNavigationBar: CurvedNavigationBar(
           height: 75.0,
           backgroundColor: Colors.transparent,
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).scaffoldBackgroundColor,
           index: _selectedIndex,
           onTap: navigateBottomBar,
-          items: [
-            const Icon(Icons.home),
-            const Icon(Icons.search),
-            CircleAvatar(
-                radius: 23,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                child: const Icon(Icons.add,
-                    size: 30, color: AppColor.vibrantColor)),
-            const Icon(Icons.photo_library),
-            const Icon(Icons.person),
+          items: const [
+            Icon(Icons.home),
+            Icon(Icons.search),
+            Icon(Icons.add, size: 35, color: AppColor.vibrantColor),
+            Icon(Icons.photo_library),
+            Icon(Icons.person),
           ],
           animationDuration: const Duration(milliseconds: 300),
           animationCurve: Curves.easeInOut,

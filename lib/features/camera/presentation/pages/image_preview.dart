@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:Camera/features/editor/domain/entities/share_to_firebase.dart';
+import 'package:Camera/components/share_to_firebase.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:Camera/features/editor/domain/entities/download_image.dart';
+import 'package:Camera/components/download_image.dart';
 
 //TODO: Image Quality is not good, need to fix it
 //TODO: Implement another way to delete in grid view

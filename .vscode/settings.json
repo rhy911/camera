@@ -1,4 +1,16 @@
 {
-    "cmake.configureOnOpen": true,
-    "cmake.sourceDirectory": "D:/Flutter/camera/linux"
+  "cmake.configureOnOpen": true,
+  "cmake.sourceDirectory": "D:/Flutter/camera/linux",
+
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false,
+  "editor.wordWrap": "on",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[dart]": {
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  }
 }

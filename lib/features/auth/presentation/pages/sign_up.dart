@@ -74,7 +74,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

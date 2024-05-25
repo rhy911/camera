@@ -1,29 +1,19 @@
 import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
 import 'package:Camera/features/editor/presentation/pages/crop_page.dart';
+import 'package:Camera/features/editor/presentation/pages/filters_page.dart';
 import 'package:Camera/features/editor/presentation/pages/widget/icon_button_with_title.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:provider/provider.dart';
+import 'package:Camera/features/editor/provider/image_provider.dart'
+    as provider;
 
 class EditingScreen extends StatelessWidget {
-  const EditingScreen({super.key, required this.image});
-  final Image image;
+  const EditingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return EditPhotoLayout(image: image);
-  }
-}
-
-class EditPhotoLayout extends StatefulWidget {
-  const EditPhotoLayout({super.key, required this.image});
-  final Image image;
-  @override
-  State<EditPhotoLayout> createState() => _EditingScreenState();
-}
-
-class _EditingScreenState extends State<EditPhotoLayout> {
-  @override
-  Widget build(BuildContext context) {
+    final imageProvider = Provider.of<provider.ImageProvider>(context);
     return PopScope(
       canPop: false,
       child: Scaffold(
@@ -39,10 +29,13 @@ class _EditingScreenState extends State<EditPhotoLayout> {
                       title: 'Discard Changes',
                       description:
                           'Are you sure you want to discard the changes?',
-                      leftText: 'Cancle',
+                      leftText: 'Cancel',
                       rightText: 'Discard')
                   .then((value) {
-                if (value == true) Navigator.pop(context);
+                if (value == true) {
+                  imageProvider.currentImage = null;
+                  Navigator.pop(context);
+                }
               });
             },
             icon: const Icon(Icons.arrow_back),
@@ -65,18 +58,24 @@ class _EditingScreenState extends State<EditPhotoLayout> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                iconButtonWithTitle(onPressed: () {
-                  Navigator.push(
+                iconButtonWithTitle(onPressed: () async {
+                  final result = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const CropPage(),
+                      builder: (context) => ChangeNotifierProvider.value(
+                          value: imageProvider, child: CropPage()),
                     ),
                   );
+                  if (result != null) {
+                    imageProvider.currentImage = result;
+                  }
                 }, Icons.crop, 'Crop'),
-                iconButtonWithTitle(
-                    onPressed: () {}, Icons.rotate_left, 'Rotate'),
-                iconButtonWithTitle(onPressed: () {}, Icons.flip, 'Flip'),
-                iconButtonWithTitle(onPressed: () {}, Icons.filter, 'Filter'),
+                iconButtonWithTitle(onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ChangeNotifierProvider.value(
+                        value: imageProvider, child: const FiltersPage());
+                  }));
+                }, Icons.filter, 'Filter'),
                 iconButtonWithTitle(
                     onPressed: () {}, Icons.text_fields, 'Text'),
               ],
@@ -88,7 +87,7 @@ class _EditingScreenState extends State<EditPhotoLayout> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.75,
               child: PhotoView(
-                imageProvider: widget.image.image,
+                imageProvider: imageProvider.currentImage.image,
               ),
             ),
           ),

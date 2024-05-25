@@ -2,13 +2,13 @@ import 'package:Camera/components/theme_switch.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:flutter/material.dart';
 
-class LandingScreen extends StatelessWidget {
-  const LandingScreen({super.key});
+class StartingScreen extends StatelessWidget {
+  const StartingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).primaryColor,
       body: Stack(
         children: [
           const PositionedDirectional(
@@ -22,9 +22,12 @@ class LandingScreen extends StatelessWidget {
               children: [
                 Text(
                   "C A M\n        E D I T",
-                  style: Theme.of(context).textTheme.displayLarge,
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
+                      ?.copyWith(fontSize: 80),
                 ),
-                const SizedBox(height: 150),
+                const SizedBox(height: 100),
                 SizedBox(
                   width: 300,
                   height: 60,

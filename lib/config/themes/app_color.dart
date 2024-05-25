@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color primaryColor = Color(0xFFA69CAC);
-  static const Color secondaryColor = Color(0xFF161B33);
-  static const Color midColor = Color(0xFF474973);
-  static const Color backgroundLight = Color(0xFFF1DAC4);
-  static const Color backgroundDark = Color(0xFF0D0C1D);
+  static const Color primaryDark = Color(0xFF1F0330);
+  static const Color backgroundDark = Color(0xFF000000);
+  static const Color darkPurple = Color(0xFF52057B);
+
   static const Color black = Colors.black87;
+
+  static const Color primaryLight = Color(0xFFF3DFFA);
+  static const Color backgroundLight = Color(0xFFF9F9F9);
+  static const Color lightPurple = Color(0xFFECC5FB);
+  static const Color lightYellow = Color(0xFFFAF4B7);
   static const Color white = Colors.white70;
-  static const Color primaryTextColor = Colors.white;
+
+  static const Color midColor = Color(0xFF474973);
 
   static const Color iconColor = Colors.white;
   static const Color vibrantColor = Color(0xFFE63946);

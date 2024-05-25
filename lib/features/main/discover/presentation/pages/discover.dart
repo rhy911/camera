@@ -1,19 +1,19 @@
 import 'dart:async';
 
-import 'package:Camera/components/image_view.dart';
+import 'package:Camera/features/main/discover/presentation/widgets/image_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class DiscoverPage extends StatefulWidget {
+  const DiscoverPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<DiscoverPage> createState() => _DiscoverPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _DiscoverPageState extends State<DiscoverPage> {
   List<Widget> images = [];
   List<String> fromUser = [];
   bool isLoadingMore = false;
