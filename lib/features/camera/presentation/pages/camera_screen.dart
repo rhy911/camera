@@ -5,9 +5,8 @@ import 'package:Camera/features/camera/domain/entities/body_components/gestures.
 import 'package:Camera/features/camera/domain/entities/appbar_components/gridlines.dart';
 import 'package:Camera/features/camera/domain/entities/appbar_components/timer.dart';
 import 'package:Camera/features/camera/domain/entities/body_components/take_picture.dart';
-import 'package:Camera/components/crop_image.dart';
+import 'package:Camera/features/camera/domain/crop_to_aspect_ratio.dart';
 import 'package:Camera/features/camera/provider/camera_state.dart';
-import 'package:Camera/features/camera/presentation/pages/image_preview.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
@@ -79,102 +78,97 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final cameraState = Provider.of<CameraState>(context);
-    final bool isRearCameraSelected = cameraState.isRearCameraSelected;
-    final double aspectRatio = cameraState.aspectRatio;
-    final bool onGrid = cameraState.onGrid;
-    final int timerDuration = cameraState.timerDuration;
-    return Scaffold(
-      backgroundColor: AppColor.black,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          InkWell(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: const Icon(Icons.close)),
-          const SizedBox(width: 10),
-        ],
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            //Aspect Ratio button
-            const AspectRatioButton(),
-            //Flash button
-            FlashButton(controller: _controller),
-            //Gridlines button
-            const GridLinesButton(),
-            //Timer button
-            const TimerButton()
-          ],
-        ),
-      ),
-      body: Stack(children: [
-        Gestures(
-          controller: _controller,
-          child: AspectRatio(
-            aspectRatio: aspectRatio,
-            child: ClipRect(
-              child: CustomPaint(
-                foregroundPainter: onGrid ? GridPainter() : null,
-                child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: _controller.value.previewSize?.height,
-                    height: _controller.value.previewSize?.width,
-                    child: CameraPreview(_controller),
+    return Consumer<CameraProvider>(
+      builder: (context, cameraProvider, child) {
+        final int timerDuration = cameraProvider.timerDuration;
+        return Scaffold(
+          backgroundColor: AppColor.black,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            actions: [
+              InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(Icons.close)),
+              const SizedBox(width: 10),
+            ],
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const AspectRatioButton(),
+                FlashButton(controller: _controller),
+                const GridLinesButton(),
+                const TimerButton()
+              ],
+            ),
+          ),
+          body: Stack(children: [
+            Gestures(
+              controller: _controller,
+              child: AspectRatio(
+                aspectRatio: cameraProvider.aspectRatio,
+                child: ClipRect(
+                  child: CustomPaint(
+                    foregroundPainter:
+                        cameraProvider.onGrid ? GridPainter() : null,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: _controller.value.previewSize?.height,
+                        height: _controller.value.previewSize?.width,
+                        child: CameraPreview(_controller),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
-        Container(
-          alignment: Alignment.bottomCenter,
-          margin: const EdgeInsetsDirectional.only(bottom: 80),
-          child: TakePictureButton(
-            controller: _controller,
-            onPictureTaken: (file) async {
-              debugPrint("done take picture");
-              var newFile = await cropImage(context, file);
-              if (mounted) {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ImagePreview(
-                            newFile, aspectRatio, isRearCameraSelected)));
-              }
-            },
-          ),
-        ),
-        Container(
-          alignment: Alignment.bottomRight,
-          margin: const EdgeInsetsDirectional.only(end: 40, bottom: 90),
-          child: FlipCameraButton(
-            controller: _controller,
-            onCameraFlip: (newController) {
-              setState(() {
-                _controller = newController;
-              });
-            },
-          ),
-        ),
-        Column(
-          children: [
-            const SizedBox(height: 150),
-            Center(
-              child: timerDuration != 0
-                  ? Text('$timerDuration',
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayLarge
-                          ?.copyWith(fontSize: 80))
-                  : Container(),
+            Container(
+              alignment: Alignment.bottomCenter,
+              margin: const EdgeInsetsDirectional.only(bottom: 80),
+              child: TakePictureButton(
+                controller: _controller,
+                onPictureTaken: (file) async {
+                  debugPrint("done take picture");
+                  var newFile = await cropToAspectRatio(context, file);
+                  cameraProvider.capturedImage = newFile;
+                  if (context.mounted) {
+                    Navigator.pushNamed(context, '/Image Preview',
+                        arguments: cameraProvider);
+                  }
+                },
+              ),
             ),
-          ],
-        ),
-      ]),
+            Container(
+              alignment: Alignment.bottomRight,
+              margin: const EdgeInsetsDirectional.only(end: 40, bottom: 90),
+              child: FlipCameraButton(
+                controller: _controller,
+                onCameraFlip: (newController) {
+                  setState(() {
+                    _controller = newController;
+                  });
+                },
+              ),
+            ),
+            Column(
+              children: [
+                const SizedBox(height: 150),
+                Center(
+                  child: timerDuration != 0
+                      ? Text('$timerDuration',
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge
+                              ?.copyWith(fontSize: 80))
+                      : Container(),
+                ),
+              ],
+            ),
+          ]),
+        );
+      },
     );
   }
 }

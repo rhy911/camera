@@ -41,12 +41,14 @@ Widget imageIconButtonWithTitle(var image, String title, {required onPressed}) {
       onTap: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: 40, child: image),
-            Text(title, style: const TextStyle(color: Colors.white)),
-          ],
+        child: SafeArea(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 35, child: image),
+              Text(title, style: const TextStyle(color: Colors.white)),
+            ],
+          ),
         ),
       ));
 }

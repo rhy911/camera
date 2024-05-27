@@ -1,5 +1,4 @@
 import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
-import 'package:Camera/features/editor/presentation/editing_screen.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:cached_network_image/cached_network_image.dart';
@@ -41,65 +40,63 @@ class _ImageGaleryViewState extends State<ImageGaleryView> {
 
   @override
   Widget build(BuildContext context) {
-    final imageProvider = Provider.of<provider.ImageProvider>(context);
-    final imageUrls = imageProvider.imageUrls;
-    final initialIndex = imageProvider.currentIndex;
+    return Consumer<provider.ImageProvider>(
+      builder: (context, imageProvider, child) {
+        final imageUrls = imageProvider.imageUrls;
+        final initialIndex = imageProvider.currentIndex;
 
-    debugPrint('initialIndex: $initialIndex');
-    debugPrint('imageUrls: ${imageUrls.length}');
+        debugPrint('index: $initialIndex');
+        debugPrint('Total: ${imageUrls.length}');
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChangeNotifierProvider.value(
-                    value: imageProvider,
-                    child: const EditingScreen(),
-                  ),
-                ),
-              );
-            },
-            icon: const Icon(Icons.edit),
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/Edit',
+                      arguments: imageProvider);
+                },
+                icon: const Icon(Icons.edit),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  showConfirmationDialog(context,
+                          title: 'Delete Image',
+                          description:
+                              'Are you sure you want to delete this image?',
+                          leftText: 'Cancel',
+                          rightText: 'Delete')
+                      .then((value) async {
+                    if (value == true) {
+                      await imageProvider.handleImageDeleted(initialIndex);
+                      if (context.mounted) Navigator.pop(context);
+                    }
+                  });
+                },
+              ),
+              const SizedBox(width: 10),
+            ],
           ),
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: () {
-              showConfirmationDialog(context,
-                      title: 'Delete Image',
-                      description:
-                          'Are you sure you want to delete this image?',
-                      leftText: 'Cancel',
-                      rightText: 'Delete')
-                  .then((value) async {
-                if (value == true) {
-                  await imageProvider.handleImageDeleted(initialIndex);
-                  if (context.mounted) Navigator.pop(context);
-                }
-              });
-            },
+          body: PhotoViewGallery.builder(
+            itemCount: imageUrls.length,
+            builder: (context, index) =>
+                PhotoViewGalleryPageOptions.customChild(
+              child: imageUrls[index].isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : PhotoView(
+                      imageProvider:
+                          CachedNetworkImageProvider(imageUrls[index]),
+                      minScale: PhotoViewComputedScale.contained,
+                    ),
+            ),
+            pageController: _pageController,
+            enableRotation: true,
           ),
-          const SizedBox(width: 10),
-        ],
-      ),
-      body: PhotoViewGallery.builder(
-        itemCount: imageUrls.length,
-        builder: (context, index) => PhotoViewGalleryPageOptions.customChild(
-          child: imageUrls[index].isEmpty
-              ? const Center(child: CircularProgressIndicator())
-              : PhotoView(
-                  imageProvider: CachedNetworkImageProvider(imageUrls[index]),
-                  minScale: PhotoViewComputedScale.contained,
-                ),
-        ),
-        pageController: _pageController,
-        enableRotation: true,
-      ),
+        );
+      },
     );
   }
 }

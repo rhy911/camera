@@ -12,7 +12,7 @@ class AspectRatioButton extends StatefulWidget {
 class _AspectRatioButtonState extends State<AspectRatioButton> {
   @override
   Widget build(BuildContext context) {
-    final aspectRatio = Provider.of<CameraState>(context).aspectRatio;
+    final aspectRatio = Provider.of<CameraProvider>(context).aspectRatio;
     return PopupMenuButton<double>(
       position: PopupMenuPosition.under,
       child: Row(
@@ -24,7 +24,8 @@ class _AspectRatioButtonState extends State<AspectRatioButton> {
         ],
       ),
       onSelected: (double result) {
-        Provider.of<CameraState>(context, listen: false).setAspectRatio(result);
+        Provider.of<CameraProvider>(context, listen: false)
+            .setAspectRatio(result);
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<double>>[
         const PopupMenuItem<double>(

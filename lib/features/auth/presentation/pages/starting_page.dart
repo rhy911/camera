@@ -1,4 +1,4 @@
-import 'package:Camera/components/theme_switch.dart';
+import 'package:Camera/core/utils/components/theme_switch.dart';
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +41,7 @@ class StartingScreen extends StatelessWidget {
                       elevation: 5,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/signup');
+                      Navigator.pushNamed(context, '/Sign Up');
                     },
                     child: const Text(
                       "REGISTER NOW",
@@ -52,7 +52,7 @@ class StartingScreen extends StatelessWidget {
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/signin');
+                    Navigator.pushNamed(context, '/Sign In');
                   },
                   child: RichText(
                     text: TextSpan(

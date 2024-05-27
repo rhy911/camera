@@ -1,20 +1,29 @@
+import 'dart:io';
+
 import 'package:Camera/main.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
 enum SetFlashmode { auto, off, on }
 
-class CameraState with ChangeNotifier {
+class CameraProvider with ChangeNotifier {
   bool isRearCameraSelected = true;
   SetFlashmode _flashmode = SetFlashmode.auto;
   double _aspectRatio = 9 / 16;
   bool _onGrid = false;
   int _timerDuration = 0;
+  File? _capturedImage;
 
   SetFlashmode get flashmode => _flashmode;
   double get aspectRatio => _aspectRatio;
   bool get onGrid => _onGrid;
   int get timerDuration => _timerDuration;
+  File? get capturedImage => _capturedImage;
+
+  set capturedImage(File? image) {
+    _capturedImage = image;
+    notifyListeners();
+  }
 
   void setAspectRatio(double aspectRatio) {
     _aspectRatio = aspectRatio;

@@ -1,4 +1,4 @@
-import 'package:Camera/components/theme_switch.dart';
+import 'package:Camera/core/utils/components/theme_switch.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         MaterialButton(
           onPressed: () {
             FirebaseAuth.instance.signOut();
-            Navigator.pushReplacementNamed(context, '/start');
+            Navigator.pushReplacementNamed(context, '/Starting Page');
           },
           color: Colors.red,
           textColor: Colors.white,

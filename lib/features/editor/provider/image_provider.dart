@@ -5,22 +5,47 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ImageProvider extends ChangeNotifier {
   final List<String> _imageUrls = [];
-  final List<String> _documentIds = [];
-  bool _isLoading = false;
   DocumentSnapshot? _lastDocument;
   int _currentIndex = 0;
   Image? _currentImage;
 
+  final List<String> _globalImageUrls = [];
+  final List<String> _fromUser = [];
+  DocumentSnapshot? _globalLastDocument;
+  int _globalCurrentIndex = 0;
+  Image? _globalCurrentImage;
+
   List<String> get imageUrls => _imageUrls;
-  List<String> get documentIds => _documentIds;
-  bool get isLoading => _isLoading;
+  DocumentSnapshot? get lastDocument => _lastDocument;
   int get currentIndex => _currentIndex;
   Image get currentImage =>
       _currentImage ??
       Image(image: CachedNetworkImageProvider(_imageUrls[_currentIndex]));
 
-  void _setLoading(bool loading) {
-    _isLoading = loading;
+  List<String> get globalImageUrls => _globalImageUrls;
+  DocumentSnapshot? get globalLastDocument => _globalLastDocument;
+  List<String> get fromUser => _fromUser;
+  int get globalCurrentIndex => _globalCurrentIndex;
+  Image get globalCurrentImage =>
+      _globalCurrentImage ??
+      Image(
+          image: CachedNetworkImageProvider(
+              _globalImageUrls[_globalCurrentIndex]));
+  String get fromUserImage => _fromUser[_globalCurrentIndex];
+
+  void loadImageList(List<String> urls) {
+    _imageUrls.addAll(urls);
+    notifyListeners();
+  }
+
+  void disposeImageList() {
+    _imageUrls.clear();
+    _lastDocument = null;
+    notifyListeners();
+  }
+
+  set lastDocument(DocumentSnapshot? document) {
+    _lastDocument = document;
     notifyListeners();
   }
 
@@ -34,85 +59,48 @@ class ImageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchInitialAssets(String? userEmail) async {
-    if (_isLoading) return;
-    _setLoading(true);
-
-    try {
-      var test = FirebaseFirestore.instance.collection('imports');
-      print('test: $test');
-
-      Query query = FirebaseFirestore.instance
-          .collection('imports')
-          .where('fromUser', isEqualTo: userEmail)
-          .orderBy('timestamp', descending: true)
-          .limit(25);
-
-      final querySnapshot = await query.get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        final List<String> newImageUrls = querySnapshot.docs
-            .map((doc) =>
-                (doc.data() as Map<String, dynamic>)['image'] as String)
-            .toList();
-        final List<String> newDocumentIds =
-            querySnapshot.docs.map((doc) => doc.id).toList();
-
-        _imageUrls.addAll(newImageUrls);
-        _documentIds.addAll(newDocumentIds);
-        _lastDocument = querySnapshot.docs.last;
-      }
-    } catch (e) {
-      debugPrint('Error fetching assets: $e');
-    } finally {
-      _setLoading(false);
-    }
+  void loadGlobalImageList(List<String> urls) {
+    _globalImageUrls.addAll(urls);
+    notifyListeners();
   }
 
-  Future<void> fetchMoreAssets(String? userEmail) async {
-    if (_isLoading || _lastDocument == null) return;
-    _setLoading(true);
+  void loadUser(List<String> user) {
+    _fromUser.addAll(user);
+    notifyListeners();
+  }
 
-    try {
-      Query query = FirebaseFirestore.instance
-          .collection('imports')
-          .where('fromUser', isEqualTo: userEmail)
-          .orderBy('timestamp', descending: true)
-          .startAfterDocument(_lastDocument!)
-          .limit(25);
+  void disposeGlobalImageList() {
+    _globalImageUrls.clear();
+    _globalLastDocument = null;
+    notifyListeners();
+  }
 
-      final querySnapshot = await query.get();
+  set globalLastDocument(DocumentSnapshot? document) {
+    _globalLastDocument = document;
+    notifyListeners();
+  }
 
-      if (querySnapshot.docs.isNotEmpty) {
-        final List<String> newImageUrls = querySnapshot.docs
-            .map((doc) =>
-                (doc.data() as Map<String, dynamic>)['image'] as String)
-            .toList();
-        final List<String> newDocumentIds =
-            querySnapshot.docs.map((doc) => doc.id).toList();
+  set globalCurrentIndex(int index) {
+    _globalCurrentIndex = index;
+    notifyListeners();
+  }
 
-        _imageUrls.addAll(newImageUrls);
-        _documentIds.addAll(newDocumentIds);
-        _lastDocument = querySnapshot.docs.last;
-      }
-    } catch (e) {
-      debugPrint('Error fetching assets: $e');
-    } finally {
-      _setLoading(false);
-    }
+  set globalCurrentImage(Image? image) {
+    _globalCurrentImage = image;
     notifyListeners();
   }
 
   Future<void> handleImageDeleted(int index) async {
     try {
-      String documentId = _documentIds[index];
       await FirebaseFirestore.instance
           .collection('imports')
-          .doc(documentId)
-          .delete();
+          .where('image', isEqualTo: _imageUrls[index])
+          .get()
+          .then((snapshot) {
+        snapshot.docs.first.reference.delete();
+      });
       await FirebaseStorage.instance.refFromURL(_imageUrls[index]).delete();
       _imageUrls.removeAt(index);
-      _documentIds.removeAt(index);
       notifyListeners();
     } catch (e) {
       debugPrint('Error deleting image: $e');

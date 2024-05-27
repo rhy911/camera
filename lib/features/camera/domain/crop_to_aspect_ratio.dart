@@ -5,10 +5,10 @@ import 'package:camera/camera.dart';
 import 'package:image/image.dart' as img;
 import 'package:provider/provider.dart';
 
-Future<File> cropImage(context, XFile file) async {
-  final cameraState = Provider.of<CameraState>(context, listen: false);
-  final aspectRatio = cameraState.aspectRatio;
-  final isRearCamera = cameraState.isRearCameraSelected;
+Future<File> cropToAspectRatio(context, XFile file) async {
+  final cameraProvider = Provider.of<CameraProvider>(context, listen: false);
+  final aspectRatio = cameraProvider.aspectRatio;
+  final isRearCamera = cameraProvider.isRearCameraSelected;
   // Read the image from the file
   final imageBytes = await File(file.path).readAsBytes();
   img.Image? image = img.decodeImage(imageBytes);

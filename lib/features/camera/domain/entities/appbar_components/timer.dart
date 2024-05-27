@@ -17,7 +17,7 @@ class _TimerButtonState extends State<TimerButton> {
       position: PopupMenuPosition.under,
       icon: const Icon(Icons.timer_rounded),
       onSelected: (int result) {
-        Provider.of<CameraState>(context, listen: false).setTimer(result);
+        Provider.of<CameraProvider>(context, listen: false).setTimer(result);
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
         const PopupMenuItem<int>(

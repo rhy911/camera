@@ -1,10 +1,13 @@
 class AppRouteName {
-  static const String start = '/start';
-  static const String signin = '/signin';
-  static const String signup = '/signup';
-  static const String mainscreen = '/homescreen';
-  static const String camera = '/camera';
-
-  static const String imagepreview = '/imagepreview';
-  static const String edit = '/edit';
+  static const String start = '/Starting Page';
+  static const String signin = '/Sign In';
+  static const String signup = '/Sign Up';
+  static const String mainscreen = '/Main Screen';
+  static const String camera = '/Camera Screen';
+  static const String imagepreview = '/Image Preview';
+  static const String imageGalleryView = '/Gallery View';
+  static const String imageDiscoveryView = '/Discovery View';
+  static const String edit = '/Edit';
+  static const String cropper = '/Cropper';
+  static const String filter = '/Filters';
 }

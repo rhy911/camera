@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
     as provider;
+import 'package:screenshot/screenshot.dart';
 
 class FiltersPage extends StatefulWidget {
   const FiltersPage({super.key});
@@ -14,83 +15,80 @@ class FiltersPage extends StatefulWidget {
 }
 
 class _FiltersPageState extends State<FiltersPage> {
-  late dynamic imageProvider;
-  Image? image;
-
-  void initData(BuildContext context) {
-    imageProvider = Provider.of<provider.ImageProvider>(context);
-    image = imageProvider.currentImage;
-  }
-
+  late final List<Filters> filters;
   late Filters _currentFilter;
-  late List<Filters> filters;
+  final ScreenshotController _screenshotController = ScreenshotController();
 
   @override
   void initState() {
     super.initState();
-    initData(context);
     filters = FilterGroup().list();
     _currentFilter = filters[0];
+    _screenshotController;
+  }
+
+  void _applyFilter(Filters filter) {
+    setState(() {
+      _currentFilter = filter;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        'Image URL: ${imageProvider.imageUrls.length}, index: ${imageProvider.currentIndex}');
-    return Scaffold(
-      backgroundColor: AppColor.black,
-      appBar: AppBar(
-        title: const Text('Filters'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.done),
-          ),
-        ],
-      ),
-      body: Center(
-          child: ColorFiltered(
-              colorFilter: ColorFilter.matrix(_currentFilter.matrix),
-              child: image)),
-      bottomNavigationBar: BottomAppBar(
-        color: AppColor.black,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              imageIconButtonWithTitle(
-                  ColorFiltered(
-                      colorFilter: ColorFilter.matrix(filters[0].matrix),
-                      child: image),
-                  'None', onPressed: () {
-                setState(() {
-                  _currentFilter = filters[0];
-                });
-              }),
-              imageIconButtonWithTitle(
-                  ColorFiltered(
-                      colorFilter: ColorFilter.matrix(filters[1].matrix),
-                      child: image),
-                  'Black & White', onPressed: () {
-                setState(() {
-                  _currentFilter = filters[1];
-                });
-              }),
-              imageIconButtonWithTitle(
-                  ColorFiltered(
-                      colorFilter: ColorFilter.matrix(filters[2].matrix),
-                      child: image),
-                  'Purple', onPressed: () {
-                setState(() {
-                  _currentFilter = filters[2];
-                });
-              }),
+    return Consumer<provider.ImageProvider>(
+      builder: (context, imageProvider, child) {
+        final image = imageProvider.currentImage;
+        return Scaffold(
+          backgroundColor: AppColor.black,
+          appBar: AppBar(
+            title: const Text('Filters'),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  if (_currentFilter != filters[0]) {
+                    _screenshotController.capture().then((capturedImage) {
+                      imageProvider.currentImage = Image.memory(capturedImage!);
+                      Navigator.pop(context);
+                    });
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+                icon: const Icon(Icons.done),
+              ),
             ],
           ),
-        ),
-      ),
+          body: Center(
+            child: Screenshot(
+              controller: _screenshotController,
+              child: ColorFiltered(
+                colorFilter: ColorFilter.matrix(_currentFilter.matrix),
+                child: image,
+              ),
+            ),
+          ),
+          bottomNavigationBar: BottomAppBar(
+            color: AppColor.black,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: filters.map((filter) {
+                  return imageIconButtonWithTitle(
+                    ColorFiltered(
+                      colorFilter: ColorFilter.matrix(filter.matrix),
+                      child: image,
+                    ),
+                    filter.name,
+                    onPressed: () => _applyFilter(filter),
+                  );
+                }).toList(),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

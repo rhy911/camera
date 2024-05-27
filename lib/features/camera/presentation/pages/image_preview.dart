@@ -1,19 +1,16 @@
-import 'dart:io';
-import 'package:Camera/components/share_to_firebase.dart';
 import 'package:Camera/config/themes/app_color.dart';
+import 'package:Camera/core/data/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:Camera/components/download_image.dart';
+import 'package:Camera/core/utils/components/download_image.dart';
+import 'package:Camera/features/camera/provider/camera_state.dart';
+import 'package:provider/provider.dart';
 
 //TODO: Image Quality is not good, need to fix it
 //TODO: Implement another way to delete in grid view
 
 class ImagePreview extends StatefulWidget {
-  const ImagePreview(this.file, this.aspectRatio, this.isRearCamera,
-      {super.key});
-  final File file;
-  final double aspectRatio;
-  final bool isRearCamera;
+  const ImagePreview({super.key});
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -21,48 +18,59 @@ class ImagePreview extends StatefulWidget {
 
 class _ImagePreviewState extends State<ImagePreview> {
   Future<ImageProvider> _loadImage() async {
-    final bytes = await widget.file.readAsBytes();
+    final file = Provider.of<CameraProvider>(context).capturedImage;
+    final bytes = await file!.readAsBytes();
     return MemoryImage(bytes);
   }
 
   @override
   Widget build(BuildContext context) {
     debugPrint('ImagePreview');
-    return Scaffold(
-      backgroundColor: AppColor.black,
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {
-                shareImageToFireBase(context, widget.file);
-              },
-              icon: const Icon(Icons.share_rounded)),
-          IconButton(
-            onPressed: () {
-              saveImageToGallery(context, widget.file.path);
-            },
-            icon: const Icon(Icons.save_alt_rounded),
+    return Consumer<CameraProvider>(
+      builder: (context, cameraProvider, child) {
+        return Scaffold(
+          backgroundColor: AppColor.black,
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    if (cameraProvider.capturedImage != null) {
+                      final apiService = ApiService();
+                      apiService.shareImageToFireBase(
+                          context, cameraProvider.capturedImage!);
+                    }
+                  },
+                  icon: const Icon(Icons.share_rounded)),
+              IconButton(
+                onPressed: () {
+                  saveImageToGallery(
+                      context, cameraProvider.capturedImage!.path);
+                },
+                icon: const Icon(Icons.save_alt_rounded),
+              ),
+              const SizedBox(width: 5),
+            ],
           ),
-          const SizedBox(width: 5),
-        ],
-      ),
-      body: FutureBuilder<ImageProvider>(
-        future: _loadImage(),
-        builder: (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.error != null) {
-            // Handle error
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return PhotoView(
-              imageProvider: snapshot.data,
-              minScale: PhotoViewComputedScale.contained,
-            );
-          }
-        },
-      ),
+          body: FutureBuilder<ImageProvider>(
+            future: _loadImage(),
+            builder:
+                (BuildContext context, AsyncSnapshot<ImageProvider> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else if (snapshot.error != null) {
+                // Handle error
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return PhotoView(
+                  imageProvider: snapshot.data,
+                  minScale: PhotoViewComputedScale.contained,
+                );
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }

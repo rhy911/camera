@@ -32,13 +32,14 @@ class _TakePictureButtonState extends State<TakePictureButton> {
         }
 
         try {
-          final cameraState = Provider.of<CameraState>(context, listen: false);
-          int initialTimer = cameraState.timerDuration;
-          await startTimer(cameraState.timerDuration, (remainingTime) {
-            cameraState.setTimer(remainingTime);
+          final cameraProvider =
+              Provider.of<CameraProvider>(context, listen: false);
+          int initialTimer = cameraProvider.timerDuration;
+          await startTimer(cameraProvider.timerDuration, (remainingTime) {
+            cameraProvider.setTimer(remainingTime);
           });
 
-          if (cameraState.timerDuration == 0) {
+          if (cameraProvider.timerDuration == 0) {
             widget.onPictureTaken(await widget.controller.takePicture());
             // Get the current time when the picture is taken successfully
             DateTime endTime = DateTime.now();
@@ -48,7 +49,7 @@ class _TakePictureButtonState extends State<TakePictureButton> {
             debugPrint("Picture taken");
             debugPrint("Time taken: ${difference.inMilliseconds} ms");
 
-            cameraState.setTimer(initialTimer); // Reset the timer
+            cameraProvider.setTimer(initialTimer); // Reset the timer
           }
         } on CameraException catch (e) {
           debugPrint("Error occured while taking photo : $e");

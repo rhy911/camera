@@ -1,5 +1,5 @@
-import 'package:Camera/api/connect_api.dart';
-import 'package:Camera/models/user_mode.dart';
+import 'package:Camera/test/api/connect_api.dart';
+import 'package:Camera/test/api/user_mode.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {

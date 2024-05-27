@@ -24,7 +24,8 @@ class _FlipCameraButtonState extends State<FlipCameraButton> {
     return IconButton(
       onPressed: () async {
         final newController =
-            await Provider.of<CameraState>(context, listen: false).flipCamera();
+            await Provider.of<CameraProvider>(context, listen: false)
+                .flipCamera();
         widget.onCameraFlip(newController);
       },
       icon: const Icon(Icons.flip_camera_ios_outlined, size: 50),

@@ -14,10 +14,10 @@ class FlashButton extends StatefulWidget {
 class _FlashButtonState extends State<FlashButton> {
   @override
   Widget build(BuildContext context) {
-    SetFlashmode flashmode = Provider.of<CameraState>(context).flashmode;
+    SetFlashmode flashmode = Provider.of<CameraProvider>(context).flashmode;
     return IconButton(
       onPressed: () {
-        Provider.of<CameraState>(context, listen: false)
+        Provider.of<CameraProvider>(context, listen: false)
             .changeFlashMode(widget.controller);
       },
       icon: flashmode == SetFlashmode.on

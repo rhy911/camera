@@ -17,8 +17,7 @@ class _AuthPageState extends State<AuthPage> {
         builder: ((context, snapshot) {
           if (snapshot.hasData) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context)
-                  .pushReplacementNamed(AppRouteName.mainscreen);
+              Navigator.pushReplacementNamed(context, '/Main Screen');
             });
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {

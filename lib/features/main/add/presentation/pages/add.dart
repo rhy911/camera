@@ -72,7 +72,7 @@ class _AddWidgetState extends State<AddWidget> {
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
-                        '/camera',
+                        '/Camera Screen',
                       );
                     },
                     style: ElevatedButton.styleFrom(

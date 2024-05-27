@@ -15,9 +15,9 @@ class _GridButtonState extends State<GridLinesButton> {
     return IconButton(
       padding: const EdgeInsets.all(10),
       onPressed: () {
-        Provider.of<CameraState>(context, listen: false).toggleGrid();
+        Provider.of<CameraProvider>(context, listen: false).toggleGrid();
       },
-      icon: Provider.of<CameraState>(context).onGrid
+      icon: Provider.of<CameraProvider>(context).onGrid
           ? const Icon(Icons.grid_on_sharp)
           : const Icon(Icons.grid_off_sharp),
     );
