@@ -15,6 +15,19 @@ class ImageProvider extends ChangeNotifier {
   int _globalCurrentIndex = 0;
   Image? _globalCurrentImage;
 
+  void reset() {
+    _imageUrls.clear();
+    _lastDocument = null;
+    _currentIndex = 0;
+    _currentImage = null;
+    _globalImageUrls.clear();
+    _fromUser.clear();
+    _globalLastDocument = null;
+    _globalCurrentIndex = 0;
+    _globalCurrentImage = null;
+    notifyListeners();
+  }
+
   List<String> get imageUrls => _imageUrls;
   DocumentSnapshot? get lastDocument => _lastDocument;
   int get currentIndex => _currentIndex;

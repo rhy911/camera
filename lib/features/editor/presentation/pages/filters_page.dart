@@ -34,6 +34,12 @@ class _FiltersPageState extends State<FiltersPage> {
   }
 
   @override
+  void dispose() {
+    _screenshotController;
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<provider.ImageProvider>(
       builder: (context, imageProvider, child) {

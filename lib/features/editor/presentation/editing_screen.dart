@@ -71,6 +71,10 @@ class EditingScreen extends StatelessWidget {
                       Navigator.pushNamed(context, '/Filters',
                           arguments: imageProvider);
                     }, Icons.filter, 'Filter'),
+                    iconButtonWithTitle(Icons.tune, 'Adjust', onPressed: () {
+                      Navigator.pushNamed(context, '/Adjust',
+                          arguments: imageProvider);
+                    }),
                     iconButtonWithTitle(
                         onPressed: () {}, Icons.text_fields, 'Text'),
                   ],

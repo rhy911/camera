@@ -3,6 +3,7 @@ import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:Camera/config/route/routes_name.dart';
 import 'package:Camera/features/camera/presentation/pages/camera_screen.dart';
 import 'package:Camera/features/editor/presentation/editing_screen.dart';
+import 'package:Camera/features/editor/presentation/pages/adjust_page.dart';
 import 'package:Camera/features/editor/presentation/pages/crop_page.dart';
 import 'package:Camera/features/editor/presentation/pages/filters_page.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
@@ -63,6 +64,11 @@ class AppRoute {
             builder: (_) => ChangeNotifierProvider.value(
                 value: args as provider.ImageProvider,
                 child: const FiltersPage()));
+      case AppRouteName.adjust:
+        return MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider.value(
+                value: args as provider.ImageProvider,
+                child: const AdjustPage()));
       default:
         return MaterialPageRoute(builder: (_) => const AuthPage());
     }

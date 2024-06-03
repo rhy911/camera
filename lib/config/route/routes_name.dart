@@ -10,4 +10,5 @@ class AppRouteName {
   static const String edit = '/Edit';
   static const String cropper = '/Cropper';
   static const String filter = '/Filters';
+  static const String adjust = '/Adjust';
 }
