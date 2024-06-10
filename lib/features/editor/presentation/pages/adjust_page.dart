@@ -1,11 +1,10 @@
-import 'package:Camera/features/editor/presentation/pages/widget/icon_button_with_title.dart';
-import 'package:Camera/features/editor/presentation/pages/widget/slider.dart';
+import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:Camera/features/editor/presentation/widget/slider.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:colorfilter_generator/addons.dart';
 import 'package:colorfilter_generator/colorfilter_generator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -72,10 +71,14 @@ class _AdjustPageState extends State<AdjustPage> {
                     saturation != 0.0 ||
                     hue != 0.0) {
                   _screenshotController.capture().then((capturedImage) {
+                    imageProvider.currentImagePath = capturedImage;
                     imageProvider.currentImage = Image.memory(capturedImage!);
+                  }).then((_) {
+                    Navigator.pop(context);
                   });
+                } else {
+                  Navigator.pop(context);
                 }
-                Navigator.pop(context);
               },
               icon: const Icon(Icons.done),
             ),
@@ -165,7 +168,7 @@ class _AdjustPageState extends State<AdjustPage> {
                       children: [
                         Visibility(
                           visible: showBrightness,
-                          child: slider(
+                          child: adjustSlider(
                             value: brightness,
                             onChanged: (value) {
                               setState(() {
@@ -177,7 +180,7 @@ class _AdjustPageState extends State<AdjustPage> {
                         ),
                         Visibility(
                           visible: showContrast,
-                          child: slider(
+                          child: adjustSlider(
                             value: contrast,
                             onChanged: (value) {
                               setState(() {
@@ -189,7 +192,7 @@ class _AdjustPageState extends State<AdjustPage> {
                         ),
                         Visibility(
                           visible: showSaturation,
-                          child: slider(
+                          child: adjustSlider(
                             value: saturation,
                             onChanged: (value) {
                               setState(() {
@@ -201,7 +204,7 @@ class _AdjustPageState extends State<AdjustPage> {
                         ),
                         Visibility(
                           visible: showHue,
-                          child: slider(
+                          child: adjustSlider(
                             value: hue,
                             onChanged: (value) {
                               setState(() {

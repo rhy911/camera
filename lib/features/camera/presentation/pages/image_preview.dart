@@ -37,7 +37,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                   onPressed: () {
                     if (cameraProvider.capturedImage != null) {
                       final apiService = ApiService();
-                      apiService.shareImageToFireBase(
+                      apiService.uploadImage(
                           context, cameraProvider.capturedImage!);
                     }
                   },

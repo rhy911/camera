@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
-    as provider;
+import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
 import 'package:Camera/models/image_models.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:provider/provider.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -17,7 +17,7 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
-  provider.ImageProvider imageProvider = provider.ImageProvider();
+  DiscoveryProvider provider = DiscoveryProvider();
   bool isLoading = false;
   final ScrollController _scrollController = ScrollController();
 
@@ -28,9 +28,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     });
 
     try {
-      final apiService = ApiService();
-      final data =
-          await apiService.fetchImages(imageProvider.globalLastDocument);
+      final data = await ApiService().fetchImages(provider.globalLastDocument);
       final imageData = data['images'] as List<ImageModel>;
 
       if (data.isNotEmpty) {
@@ -41,9 +39,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
           return doc.fromUser;
         }).toList();
 
-        imageProvider.loadGlobalImageList(newImages);
-        imageProvider.loadUser(newFromUser);
-        imageProvider.globalLastDocument =
+        provider.loadGlobalImageList(newImages);
+        provider.loadUser(newFromUser);
+        provider.globalLastDocument =
             data['lastDocument'] as DocumentSnapshot<Object?>?;
       }
     } catch (e) {
@@ -65,6 +63,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   @override
   void initState() {
+    provider = Provider.of<DiscoveryProvider>(context, listen: false);
     _fetchImages();
     _scrollController.addListener(_onScroll);
     super.initState();
@@ -85,7 +84,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: RefreshIndicator(
           onRefresh: () async {
-            imageProvider.disposeGlobalImageList();
+            provider.disposeGlobalImageList();
             await _fetchImages();
           },
           child: CustomScrollView(
@@ -105,7 +104,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 crossAxisCount: 2,
                 mainAxisSpacing: 4,
                 crossAxisSpacing: 4,
-                childCount: imageProvider.globalImageUrls.length,
+                childCount: provider.globalImageUrls.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                       padding: const EdgeInsets.all(5.0),
@@ -113,12 +112,15 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         borderRadius: BorderRadius.circular(10.0),
                         child: InkWell(
                             onTap: () {
-                              imageProvider.globalCurrentIndex = index;
-                              Navigator.pushNamed(context, '/Discovery View',
-                                  arguments: imageProvider);
+                              provider.globalCurrentIndex = index;
+                              debugPrint(
+                                  'index: ${provider.globalCurrentIndex}');
+                              debugPrint(
+                                  'Total: ${provider.globalImageUrls.length}');
+                              Navigator.pushNamed(context, '/Discovery View');
                             },
                             child: CachedNetworkImage(
-                                imageUrl: imageProvider.globalImageUrls[index],
+                                imageUrl: provider.globalImageUrls[index],
                                 fit: BoxFit.cover)),
                       ));
                 },

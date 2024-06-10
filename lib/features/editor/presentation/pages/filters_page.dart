@@ -1,6 +1,6 @@
 import 'package:Camera/config/themes/app_color.dart';
 import 'package:Camera/features/editor/model/filters.dart';
-import 'package:Camera/features/editor/presentation/pages/widget/icon_button_with_title.dart';
+import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
@@ -54,7 +54,9 @@ class _FiltersPageState extends State<FiltersPage> {
                 onPressed: () {
                   if (_currentFilter != filters[0]) {
                     _screenshotController.capture().then((capturedImage) {
+                      imageProvider.currentImagePath = capturedImage;
                       imageProvider.currentImage = Image.memory(capturedImage!);
+                    }).then((_) {
                       Navigator.pop(context);
                     });
                   } else {

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:Camera/config/route/route.dart';
 import 'package:Camera/config/themes/provider/theme_provider.dart';
 import 'package:Camera/features/camera/provider/camera_state.dart';
+import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -52,10 +53,14 @@ class MyApp extends StatelessWidget {
         );
       },
       providers: [
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
-        ChangeNotifierProvider(create: (context) => CameraProvider()),
+        ChangeNotifierProvider<ThemeProvider>(
+            create: (context) => ThemeProvider()),
+        ChangeNotifierProvider<CameraProvider>(
+            create: (context) => CameraProvider()),
         ChangeNotifierProvider<provider.ImageProvider>(
-            create: (context) => provider.ImageProvider())
+            create: (context) => provider.ImageProvider()),
+        ChangeNotifierProvider<DiscoveryProvider>(
+            create: (context) => DiscoveryProvider()),
       ],
     );
   }

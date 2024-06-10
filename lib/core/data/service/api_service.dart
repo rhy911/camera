@@ -54,32 +54,48 @@ class ApiService {
     };
   }
 
-  Future<void> shareImageToFireBase(BuildContext context, File file) async {
-    showLoadingDialog('Sharing to My Gallery', context);
-    _storage
+  Future<void> uploadImage(BuildContext context, File file) async {
+    showLoadingDialog('Uploading', context);
+    final ref = _storage
         .ref()
         .child('user: ${FirebaseAuth.instance.currentUser!.email}')
         .child('imported images')
-        .child('${DateTime.now().toIso8601String()}.jpg')
-        .putFile(file)
-        .then((TaskSnapshot taskSnapshot) {
-      taskSnapshot.ref.getDownloadURL().then((String url) async {
-        await _firestore.collection('imports').add({
-          'image': url,
-          'timestamp': FieldValue.serverTimestamp(),
-          'fromUser': FirebaseAuth.instance.currentUser!.email,
-        });
-        if (context.mounted) {
-          hideLoadingDialog(context);
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Uploaded to My Gallery !'),
-              duration:
-                  Duration(seconds: 2), // Change this to your desired duration
-            ),
-          );
-        }
+        .child('${DateTime.now().toIso8601String()}.jpg');
+    await ref.putFile(file);
+    final url = await ref.getDownloadURL();
+    await _firestore.collection('imports').add({
+      'image': url,
+      'timestamp': FieldValue.serverTimestamp(),
+      'fromUser': FirebaseAuth.instance.currentUser!.email,
+    });
+
+    if (context.mounted) {
+      hideLoadingDialog(context);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Imported successfully, check your Gallery'),
+        duration: Duration(seconds: 2),
+      ));
+    }
+  }
+
+  Future<void> deleteImage(String imageUrl) async {
+    try {
+      await _firestore
+          .collection('imports')
+          .where('image', isEqualTo: imageUrl)
+          .get()
+          .then((snapshot) {
+        snapshot.docs.first.reference.delete();
       });
+      await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    } catch (e) {
+      debugPrint('Error deleting image: $e');
+    }
+  }
+
+  Future<List<String>> fetchStickers() {
+    return _storage.ref().child('stickers').listAll().then((value) async {
+      return Future.wait(value.items.map((e) => e.getDownloadURL()));
     });
   }
 }

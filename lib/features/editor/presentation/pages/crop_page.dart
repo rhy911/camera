@@ -1,5 +1,8 @@
+import 'dart:typed_data';
+import 'dart:ui' as ui;
+
 import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/features/editor/presentation/pages/widget/icon_button_with_title.dart';
+import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:crop_image/crop_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,11 +28,17 @@ class CropPage extends StatelessWidget {
             centerTitle: true,
             actions: [
               IconButton(
-                onPressed: () {
-                  Navigator.pop(
-                      context,
-                      _cropController.croppedImage(
-                          quality: FilterQuality.high));
+                onPressed: () async {
+                  ui.Image bitmap = await _cropController.croppedBitmap(
+                      quality: FilterQuality.high);
+                  ByteData? byteData =
+                      await bitmap.toByteData(format: ui.ImageByteFormat.png);
+                  Uint8List pngBytes = byteData!.buffer.asUint8List();
+                  imageProvider.currentImagePath = pngBytes;
+                  imageProvider.currentImage = Image.memory(pngBytes);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 },
                 icon: const Icon(Icons.done),
               ),

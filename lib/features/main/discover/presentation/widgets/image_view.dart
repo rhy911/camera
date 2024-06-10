@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:Camera/core/utils/components/download_image.dart';
 import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
-    as provider;
+import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -24,9 +23,9 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
   @override
   void initState() {
     super.initState();
+    final provider = Provider.of<DiscoveryProvider>(context, listen: false);
     _pageController = PageController(
-      initialPage: Provider.of<provider.ImageProvider>(context, listen: false)
-          .globalCurrentIndex,
+      initialPage: provider.globalCurrentIndex,
     );
   }
 
@@ -38,10 +37,10 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<provider.ImageProvider>(
-      builder: (BuildContext context, imageProvider, Widget? child) {
-        debugPrint('index: ${imageProvider.globalCurrentIndex}');
-        debugPrint('Total: ${imageProvider.globalImageUrls.length}');
+    return Consumer<DiscoveryProvider>(
+      builder: (BuildContext context, provider, Widget? child) {
+        debugPrint('index: ${provider.globalCurrentIndex}');
+        debugPrint('Total: ${provider.globalImageUrls.length}');
 
         return Scaffold(
           extendBodyBehindAppBar: true,
@@ -53,12 +52,12 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.85,
                 child: PhotoViewGallery.builder(
-                  itemCount: imageProvider.globalImageUrls.length,
+                  itemCount: provider.globalImageUrls.length,
                   builder: (context, index) =>
                       PhotoViewGalleryPageOptions.customChild(
                     child: PhotoView(
                       imageProvider: CachedNetworkImageProvider(
-                        imageProvider.globalImageUrls[index],
+                        provider.globalImageUrls[index],
                       ),
                       minScale: PhotoViewComputedScale.contained,
                     ),
@@ -66,13 +65,13 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                   pageController: _pageController,
                   enableRotation: true,
                   onPageChanged: (index) {
-                    imageProvider.globalCurrentIndex = index;
+                    provider.globalCurrentIndex = index;
                   },
                 ),
               ),
               const SizedBox(height: 10),
               Text(
-                'From: ${imageProvider.fromUser[imageProvider.globalCurrentIndex]}',
+                'From: ${provider.fromUser[provider.globalCurrentIndex]}',
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
               Row(
@@ -81,11 +80,10 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                   TextButton(
                     onPressed: () async {
                       File imageFile = await urlToFile(
-                        imageProvider
-                            .globalImageUrls[imageProvider.globalCurrentIndex],
+                        provider.globalImageUrls[provider.globalCurrentIndex],
                       );
                       if (context.mounted) {
-                        apiService.shareImageToFireBase(context, imageFile);
+                        apiService.uploadImage(context, imageFile);
                       }
                     },
                     child: const Text('Pin'),
@@ -93,8 +91,7 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                   TextButton(
                     onPressed: () async {
                       File imageFile = await urlToFile(
-                        imageProvider
-                            .globalImageUrls[imageProvider.globalCurrentIndex],
+                        provider.globalImageUrls[provider.globalCurrentIndex],
                       );
                       if (context.mounted) {
                         saveImageToGallery(context, imageFile.path);

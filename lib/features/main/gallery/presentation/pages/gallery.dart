@@ -50,8 +50,6 @@ class _ImageGridState extends State<ImageGrid> {
           await apiService.fetchImagesByUser(imageProvider.lastDocument);
       final imageData = data['images'] as List<ImageModel>;
       if (mounted) {
-        final imageProvider =
-            Provider.of<provider.ImageProvider>(context, listen: false);
         if (data.isNotEmpty) {
           final List<String> newImageUrls = imageData.map((imageModel) {
             return imageModel.imageUrl;
@@ -136,11 +134,7 @@ class _ImageGridState extends State<ImageGrid> {
                         onTap: () {
                           imageProvider.currentIndex = index;
                           debugPrint('${imageProvider.currentIndex}');
-                          Navigator.pushNamed(context, '/Gallery View',
-                                  arguments: imageProvider)
-                              .then((_) {
-                            _fetchImages();
-                          });
+                          Navigator.pushNamed(context, '/Gallery View');
                         },
                       ),
                     );

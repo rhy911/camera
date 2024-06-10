@@ -1,13 +1,13 @@
 import 'package:Camera/features/camera/presentation/pages/image_preview.dart';
-import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:Camera/config/route/routes_name.dart';
 import 'package:Camera/features/camera/presentation/pages/camera_screen.dart';
 import 'package:Camera/features/editor/presentation/editing_screen.dart';
 import 'package:Camera/features/editor/presentation/pages/adjust_page.dart';
 import 'package:Camera/features/editor/presentation/pages/crop_page.dart';
+import 'package:Camera/features/editor/presentation/pages/draw_page.dart';
 import 'package:Camera/features/editor/presentation/pages/filters_page.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
-    as provider;
+import 'package:Camera/features/editor/presentation/pages/stickers_page.dart';
+import 'package:Camera/features/editor/presentation/pages/text_page.dart';
 import 'package:Camera/features/main/discover/presentation/widgets/image_view.dart';
 import 'package:Camera/features/main/gallery/presentation/widgets/image_view_gallery.dart';
 import 'package:Camera/features/main/main_screen.dart';
@@ -16,12 +16,9 @@ import 'package:Camera/features/auth/presentation/pages/starting_page.dart';
 import 'package:Camera/features/auth/presentation/pages/sign_in.dart';
 import 'package:Camera/features/auth/presentation/pages/sign_up.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AppRoute {
   static Route<dynamic>? generate(RouteSettings settings) {
-    final args = settings.arguments;
-
     switch (settings.name) {
       case AppRouteName.start:
         return MaterialPageRoute(builder: (_) => const StartingScreen());
@@ -32,43 +29,27 @@ class AppRoute {
       case AppRouteName.mainscreen:
         return MaterialPageRoute(builder: (_) => const MainScreen());
       case AppRouteName.camera:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider(
-                create: (BuildContext context) => CameraProvider(),
-                child: const CameraApp()));
+        return MaterialPageRoute(builder: (_) => const CameraApp());
       case AppRouteName.imagepreview:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as CameraProvider, child: const ImagePreview()));
+        return MaterialPageRoute(builder: (_) => const ImagePreview());
       case AppRouteName.imageGalleryView:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider,
-                child: const ImageGaleryView()));
+        return MaterialPageRoute(builder: (_) => const ImageGaleryView());
       case AppRouteName.imageDiscoveryView:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider,
-                child: const ImageDiscoveryView()));
+        return MaterialPageRoute(builder: (_) => const ImageDiscoveryView());
       case AppRouteName.edit:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider,
-                child: const EditingScreen()));
+        return MaterialPageRoute(builder: (_) => const EditingScreen());
       case AppRouteName.cropper:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider, child: CropPage()));
+        return MaterialPageRoute(builder: (_) => CropPage());
       case AppRouteName.filter:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider,
-                child: const FiltersPage()));
+        return MaterialPageRoute(builder: (_) => const FiltersPage());
       case AppRouteName.adjust:
-        return MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-                value: args as provider.ImageProvider,
-                child: const AdjustPage()));
+        return MaterialPageRoute(builder: (_) => const AdjustPage());
+      case AppRouteName.text:
+        return MaterialPageRoute(builder: (_) => const TextPage());
+      case AppRouteName.sticker:
+        return MaterialPageRoute(builder: (_) => const StickersPage());
+      case AppRouteName.draw:
+        return MaterialPageRoute(builder: (_) => const DrawPage());
       default:
         return MaterialPageRoute(builder: (_) => const AuthPage());
     }

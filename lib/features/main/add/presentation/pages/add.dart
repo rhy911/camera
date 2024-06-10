@@ -1,10 +1,7 @@
 import 'dart:io';
 
 import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/core/utils/helper/loading_dialog.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:Camera/core/data/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -20,32 +17,8 @@ class _AddWidgetState extends State<AddWidget> {
     final picker = ImagePicker();
     XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      if (mounted) showLoadingDialog('Uploading', context);
-
-      // Upload the picked image to Firebase Storage
-      final ref = FirebaseStorage.instance
-          .ref()
-          .child('user: ${FirebaseAuth.instance.currentUser!.email}')
-          .child('imported images')
-          .child('${DateTime.now().toIso8601String()}.jpg');
-      await ref.putFile(File(pickedFile.path));
-
-      // Get the URL of the uploaded image
-      final url = await ref.getDownloadURL();
-
-      // Store the URL in Firestore
-      await FirebaseFirestore.instance.collection('imports').add({
-        'image': url,
-        'timestamp': FieldValue.serverTimestamp(),
-        'fromUser': FirebaseAuth.instance.currentUser!.email,
-      });
-
       if (mounted) {
-        hideLoadingDialog(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Imported successfully, check your Gallery'),
-          duration: Duration(seconds: 2),
-        ));
+        ApiService().uploadImage(context, File(pickedFile.path));
       }
     }
   }

@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:Camera/core/data/service/api_service.dart';
 import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
-import 'package:Camera/features/editor/presentation/pages/widget/icon_button_with_title.dart';
+import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
     as provider;
@@ -19,6 +23,7 @@ class EditingScreen extends StatelessWidget {
             backgroundColor: Colors.black,
             resizeToAvoidBottomInset: false,
             appBar: AppBar(
+              centerTitle: true,
               title: const Text('Editing Screen',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
               automaticallyImplyLeading: false,
@@ -41,12 +46,26 @@ class EditingScreen extends StatelessWidget {
               ),
               actions: [
                 IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.cloud_upload_rounded),
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.ios_share),
+                  onPressed: () {
+                    showConfirmationDialog(context,
+                            title: 'Save to: ',
+                            leftText: 'My Galery',
+                            rightText: 'This Device')
+                        .then((value) {
+                      if (value == true) {
+                        convertMemoryImageToFile(imageProvider.currentImagePath)
+                            .then((file) {
+                          ApiService().uploadImage(context, file);
+                        }).then((_) {
+                          imageProvider.currentImage = null;
+                          Navigator.pop(context);
+                        });
+                      } else {
+                        // Share to This Device
+                      }
+                    });
+                  },
+                  icon: const Icon(Icons.share),
                 ),
               ],
             ),
@@ -57,38 +76,32 @@ class EditingScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    iconButtonWithTitle(onPressed: () async {
-                      final result = await Navigator.pushNamed(
-                        context,
-                        '/Cropper',
-                        arguments: imageProvider,
-                      ) as Image?;
-                      if (result != null) {
-                        imageProvider.currentImage = result;
-                      }
+                    iconButtonWithTitle(onPressed: () {
+                      Navigator.pushNamed(context, '/Cropper');
                     }, Icons.crop, 'Crop'),
                     iconButtonWithTitle(onPressed: () {
-                      Navigator.pushNamed(context, '/Filters',
-                          arguments: imageProvider);
+                      Navigator.pushNamed(context, '/Filters');
                     }, Icons.filter, 'Filter'),
                     iconButtonWithTitle(Icons.tune, 'Adjust', onPressed: () {
-                      Navigator.pushNamed(context, '/Adjust',
-                          arguments: imageProvider);
+                      Navigator.pushNamed(context, '/Adjust');
                     }),
-                    iconButtonWithTitle(
-                        onPressed: () {}, Icons.text_fields, 'Text'),
+                    iconButtonWithTitle(onPressed: () {
+                      Navigator.pushNamed(context, '/Text');
+                    }, Icons.text_fields, 'Text'),
+                    iconButtonWithTitle(Icons.emoji_emotions, 'Stickers',
+                        onPressed: () {
+                      Navigator.pushNamed(context, '/Stickers');
+                    }),
+                    iconButtonWithTitle(Icons.draw, 'Draw', onPressed: () {
+                      Navigator.pushNamed(context, '/Draw');
+                    })
                   ],
                 ),
               ),
             ),
             body: SafeArea(
               child: Center(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.75,
-                  child: PhotoView(
-                    imageProvider: imageProvider.currentImage.image,
-                  ),
-                ),
+                child: imageProvider.currentImage,
               ),
             ),
           ),
@@ -96,4 +109,17 @@ class EditingScreen extends StatelessWidget {
       },
     );
   }
+}
+
+Future<File> convertMemoryImageToFile(Uint8List data) async {
+  // Get the temporary directory of the device
+  final tempDir = await getTemporaryDirectory();
+
+  // Create a new file in the temporary directory
+  final file = File('${tempDir.path}/image.jpg');
+
+  // Write the Uint8List data to the file
+  await file.writeAsBytes(data);
+
+  return file;
 }
