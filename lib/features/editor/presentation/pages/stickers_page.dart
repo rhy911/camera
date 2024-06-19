@@ -21,6 +21,7 @@ class _StickersPageState extends State<StickersPage> {
   Widget build(BuildContext context) {
     return Consumer<provider.ImageProvider>(
       builder: (BuildContext context, imageProvider, Widget? child) => Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Stickers',

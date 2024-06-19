@@ -1,4 +1,3 @@
-import 'package:Camera/config/route/routes_name.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,7 @@ class _AuthPageState extends State<AuthPage> {
             });
           } else {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pushReplacementNamed(AppRouteName.start);
+              Navigator.of(context).pushReplacementNamed('/Starting Page');
             });
           }
           return const Scaffold();

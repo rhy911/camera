@@ -13,9 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:Camera/main.dart';
 import 'package:provider/provider.dart';
 
-//TODO: Flash turn off before done capturing
+//TODO: Flash malfunctioning
 //TODO: Optimize capturing speed
-//TODO: Try to use camera plugin instead of camera package
+
+/// CameraApp is the main widget for the camera functionality.
 
 class CameraApp extends StatefulWidget {
   const CameraApp({super.key});
@@ -25,11 +26,12 @@ class CameraApp extends StatefulWidget {
 }
 
 class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
-  late CameraController _controller;
+  late CameraController _controller; // Camera controller for camera operations
 
   @override
   void initState() {
     super.initState();
+    // Initialize the camera controller with the first camera and max resolution
     _controller = CameraController(cameras[0], ResolutionPreset.max);
     _controller.initialize().then((_) {
       if (!mounted) {
@@ -52,12 +54,14 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    // Dispose of the camera controller when the widget is disposed
     _controller.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // Handle app lifecycle changes to manage camera controller
     final CameraController cameraController = _controller;
 
     if (!cameraController.value.isInitialized) {
@@ -67,108 +71,140 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
     if (state == AppLifecycleState.inactive) {
       cameraController.dispose();
     } else if (state == AppLifecycleState.resumed) {
-      cameraController.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
-      });
+      onAppResume();
     }
+  }
+
+  void onAppResume() {
+    // Reinitialize the camera controller when the app resumes
+    _controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Build the main camera UI
     return Consumer<CameraProvider>(
       builder: (context, cameraProvider, child) {
         final int timerDuration = cameraProvider.timerDuration;
         return Scaffold(
           backgroundColor: AppColor.black,
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            actions: [
-              InkWell(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Icon(Icons.close)),
-              const SizedBox(width: 10),
-            ],
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                const AspectRatioButton(),
-                FlashButton(controller: _controller),
-                const GridLinesButton(),
-                const TimerButton()
-              ],
-            ),
-          ),
-          body: Stack(children: [
-            Gestures(
-              controller: _controller,
-              child: AspectRatio(
-                aspectRatio: cameraProvider.aspectRatio,
-                child: ClipRect(
-                  child: CustomPaint(
-                    foregroundPainter:
-                        cameraProvider.onGrid ? GridPainter() : null,
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: _controller.value.previewSize?.height,
-                        height: _controller.value.previewSize?.width,
-                        child: CameraPreview(_controller),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              alignment: Alignment.bottomCenter,
-              margin: const EdgeInsetsDirectional.only(bottom: 80),
-              child: TakePictureButton(
-                controller: _controller,
-                onPictureTaken: (file) async {
-                  debugPrint("done take picture");
-                  var newFile = await cropToAspectRatio(context, file);
-                  cameraProvider.capturedImage = newFile;
-                  if (context.mounted) {
-                    Navigator.pushNamed(context, '/Image Preview',
-                        arguments: cameraProvider);
-                  }
-                },
-              ),
-            ),
-            Container(
-              alignment: Alignment.bottomRight,
-              margin: const EdgeInsetsDirectional.only(end: 40, bottom: 90),
-              child: FlipCameraButton(
-                controller: _controller,
-                onCameraFlip: (newController) {
-                  setState(() {
-                    _controller = newController;
-                  });
-                },
-              ),
-            ),
-            Column(
-              children: [
-                const SizedBox(height: 150),
-                Center(
-                  child: timerDuration != 0
-                      ? Text('$timerDuration',
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayLarge
-                              ?.copyWith(fontSize: 80))
-                      : Container(),
-                ),
-              ],
-            ),
-          ]),
+          appBar: buildAppBar(context),
+          body: buildCameraBody(context, cameraProvider, timerDuration),
         );
       },
+    );
+  }
+
+  AppBar buildAppBar(BuildContext context) {
+    // AppBar with camera controls like aspect ratio, flash, gridlines, and timer
+    return AppBar(
+      automaticallyImplyLeading: false,
+      actions: [
+        InkWell(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(Icons.close)),
+        const SizedBox(width: 10),
+      ],
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          const AspectRatioButton(),
+          FlashButton(controller: _controller),
+          const GridLinesButton(),
+          const TimerButton()
+        ],
+      ),
+    );
+  }
+
+  Stack buildCameraBody(
+      BuildContext context, CameraProvider cameraProvider, int timerDuration) {
+    // Main camera view with gestures, preview, and controls for taking pictures and flipping camera
+    return Stack(children: [
+      Gestures(
+        controller: _controller,
+        child: AspectRatio(
+          aspectRatio: cameraProvider.aspectRatio,
+          child: ClipRect(
+            child: CustomPaint(
+              foregroundPainter: cameraProvider.onGrid ? GridPainter() : null,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _controller.value.previewSize?.height,
+                  height: _controller.value.previewSize?.width,
+                  child: CameraPreview(_controller),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+      buildTakePictureButton(context, cameraProvider),
+      buildFlipCameraButton(),
+      buildTimerDisplay(context, timerDuration),
+    ]);
+  }
+
+  Container buildTakePictureButton(
+      BuildContext context, CameraProvider cameraProvider) {
+    // Button for capturing pictures
+    return Container(
+      alignment: Alignment.bottomCenter,
+      margin: const EdgeInsetsDirectional.only(bottom: 80),
+      child: TakePictureButton(
+        controller: _controller,
+        onPictureTaken: (file) async {
+          debugPrint("done take picture");
+          var newFile = await cropToAspectRatio(context, file);
+          cameraProvider.capturedImage = newFile;
+          if (context.mounted) {
+            Navigator.pushNamed(context, '/Image Preview',
+                arguments: cameraProvider);
+          }
+        },
+      ),
+    );
+  }
+
+  Container buildFlipCameraButton() {
+    // Button for flipping the camera
+    return Container(
+      alignment: Alignment.bottomRight,
+      margin: const EdgeInsetsDirectional.only(end: 40, bottom: 90),
+      child: FlipCameraButton(
+        controller: _controller,
+        onCameraFlip: (newController) {
+          setState(() {
+            _controller = newController;
+          });
+        },
+      ),
+    );
+  }
+
+  Column buildTimerDisplay(BuildContext context, int timerDuration) {
+    // Display for the countdown timer
+    return Column(
+      children: [
+        const SizedBox(height: 150),
+        Center(
+          child: timerDuration != 0
+              ? Text('$timerDuration',
+                  style: Theme.of(context)
+                      .textTheme
+                      .displayLarge
+                      ?.copyWith(fontSize: 80))
+              : Container(),
+        ),
+      ],
     );
   }
 }

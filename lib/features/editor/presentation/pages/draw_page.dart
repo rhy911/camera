@@ -33,6 +33,7 @@ class _DrawPageState extends State<DrawPage> {
   Widget build(BuildContext context) {
     return Consumer<provider.ImageProvider>(
       builder: (BuildContext context, imageProvider, Widget? child) => Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           centerTitle: true,
           title: const Text('Draw',
@@ -56,59 +57,60 @@ class _DrawPageState extends State<DrawPage> {
           ],
         ),
         bottomNavigationBar: BottomAppBar(
+            color: Colors.transparent,
             child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            imageIconButtonWithTitle(
-              Image.asset('assets/icons/pencil.png'),
-              'Pencil',
-              onPressed: () {
-                setState(() {
-                  painterController.eraseMode = false;
-                });
-              },
-            ),
-            imageIconButtonWithTitle(
-              Image.asset('assets/icons/eraser.png'),
-              'Eraser',
-              onPressed: () {
-                setState(() {
-                  painterController.eraseMode = true;
-                });
-              },
-            ),
-            iconButtonWithTitle(Icons.color_lens_outlined, 'Color',
-                onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                        title: const Text('Pick a color!'),
-                        content: SingleChildScrollView(
-                          child: ColorPicker(
-                            pickerColor: pickerColor,
-                            onColorChanged: (color) {
-                              setState(() {
-                                pickerColor = color;
-                                painterController.drawColor = pickerColor;
-                              });
-                            },
-                            pickerAreaHeightPercent: 0.8,
-                          ),
-                        ),
-                        actions: [
-                          TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Done'))
-                        ],
-                      ));
-            }),
-            iconButtonWithTitle(Icons.undo, 'Undo', onPressed: () {
-              painterController.undo();
-            })
-          ],
-        )),
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                imageIconButtonWithTitle(
+                  Image.asset('assets/icons/pencil.png'),
+                  'Pencil',
+                  onPressed: () {
+                    setState(() {
+                      painterController.eraseMode = false;
+                    });
+                  },
+                ),
+                imageIconButtonWithTitle(
+                  Image.asset('assets/icons/eraser.png'),
+                  'Eraser',
+                  onPressed: () {
+                    setState(() {
+                      painterController.eraseMode = true;
+                    });
+                  },
+                ),
+                iconButtonWithTitle(Icons.color_lens_outlined, 'Color',
+                    onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                            title: const Text('Pick a color!'),
+                            content: SingleChildScrollView(
+                              child: ColorPicker(
+                                pickerColor: pickerColor,
+                                onColorChanged: (color) {
+                                  setState(() {
+                                    pickerColor = color;
+                                    painterController.drawColor = pickerColor;
+                                  });
+                                },
+                                pickerAreaHeightPercent: 0.8,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Done'))
+                            ],
+                          ));
+                }),
+                iconButtonWithTitle(Icons.undo, 'Undo', onPressed: () {
+                  painterController.undo();
+                })
+              ],
+            )),
         body: Stack(
           children: [
             Center(

@@ -2,6 +2,7 @@ class AppRouteName {
   static const String start = '/Starting Page';
   static const String signin = '/Sign In';
   static const String signup = '/Sign Up';
+  static const String verification = '/Email Verification';
   static const String mainscreen = '/Main Screen';
   static const String camera = '/Camera Screen';
   static const String imagepreview = '/Image Preview';

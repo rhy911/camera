@@ -13,19 +13,22 @@ class AddWidget extends StatefulWidget {
 }
 
 class _AddWidgetState extends State<AddWidget> {
-  Future<void> _importImages() async {
-    final picker = ImagePicker();
-    XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      if (mounted) {
-        ApiService().uploadImage(context, File(pickedFile.path));
-      }
-    }
+  final picker = ImagePicker();
+  XFile? pickedFile;
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController topicsController = TextEditingController();
+
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    topicsController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
@@ -33,65 +36,136 @@ class _AddWidgetState extends State<AddWidget> {
             '  C R E A T E',
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 50, left: 30),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              SizedBox(
-                width: 150,
-                height: 150,
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/Camera Screen',
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.midColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: AppColor.darkPurple,
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    child: InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/Camera Screen',
+                          );
+                        },
+                        child: const Icon(Icons.camera_alt,
+                            color: Colors.white, size: 30)),
+                  ),
+                  const SizedBox(width: 50),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: AppColor.darkPurple,
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: InkWell(
+                        onTap: () async {
+                          XFile? xfile = await picker.pickImage(
+                              source: ImageSource.gallery);
+                          setState(() {
+                            pickedFile = xfile;
+                          });
+                        },
+                        child: const Icon(Icons.library_add,
+                            color: Colors.white, size: 30)),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              if (pickedFile == null)
+                const Text('No image selected.')
+              else
+                Column(
+                  children: [
+                    Stack(
                       children: [
-                        Icon(Icons.camera_enhance_rounded,
-                            color: Colors.white, size: 50),
-                        SizedBox(width: 5),
-                        Text(
-                          'Take Picture',
-                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: Image.file(File(pickedFile!.path))),
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () {
+                              setState(() {
+                                pickedFile = null;
+                              });
+                            },
+                          ),
                         ),
                       ],
-                    )),
-              ),
-              const SizedBox(width: 50),
-              SizedBox(
-                width: 120,
-                height: 120,
-                child: ElevatedButton(
-                    onPressed: () {
-                      _importImages();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColor.midColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    ),
+                    const SizedBox(height: 15),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 50,
+                      child: TextField(
+                        controller: descriptionController,
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
+                        decoration: const InputDecoration(
+                            labelText: 'Description',
+                            hintText: 'Tell everyone what this is about',
+                            labelStyle: TextStyle(fontSize: 15),
+                            hintStyle: TextStyle(fontSize: 15)),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ),
-                    child: const Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add, color: Colors.white, size: 50),
-                        Text(
-                          'Import',
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                        ),
-                      ],
-                    )),
-              ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 50,
+                      child: TextField(
+                        controller: topicsController,
+                        onTapOutside: (event) =>
+                            FocusScope.of(context).unfocus(),
+                        decoration: const InputDecoration(
+                            labelText: 'Topics',
+                            hintText: 'Tag related topics',
+                            labelStyle: TextStyle(fontSize: 15),
+                            hintStyle: TextStyle(fontSize: 15)),
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    InkWell(
+                        onTap: () {
+                          ApiService().uploadImage(
+                              context,
+                              File(pickedFile!.path),
+                              descriptionController.text,
+                              topicsController.text);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: AppColor.darkPurple,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Upload',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ))
+                  ],
+                ),
             ],
           ),
         ));

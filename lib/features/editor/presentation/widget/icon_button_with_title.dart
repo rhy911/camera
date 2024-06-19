@@ -10,7 +10,7 @@ Widget iconButtonWithTitle(IconData icon, String title, {required onPressed}) {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon),
+            Icon(icon, color: Colors.white),
             Text(title, style: const TextStyle(color: Colors.white)),
           ],
         ),
@@ -28,7 +28,7 @@ Widget rotatedIconButtonWithTitle(IconData icon, String title,
           children: [
             Transform.rotate(
               angle: pi / 2,
-              child: Icon(icon),
+              child: Icon(icon, color: Colors.white),
             ),
             Text(title, style: const TextStyle(color: Colors.white)),
           ],

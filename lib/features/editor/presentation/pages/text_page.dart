@@ -25,6 +25,7 @@ class _TextPageState extends State<TextPage> {
         return Stack(
           children: [
             Scaffold(
+                backgroundColor: Colors.black,
                 resizeToAvoidBottomInset: false,
                 appBar: AppBar(
                   centerTitle: true,

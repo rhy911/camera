@@ -11,6 +11,15 @@ class ApiService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<void> createUserDocument(UserCredential? userCredential) async {
+    if (userCredential != null && userCredential.user != null) {
+      await _firestore.collection('users').doc(userCredential.user!.email).set({
+        'email': userCredential.user!.email,
+        'uid': userCredential.user!.uid,
+      });
+    }
+  }
+
   Future<Map<String, dynamic>> fetchImages(
       DocumentSnapshot? lastDocument) async {
     Query query = _firestore
@@ -54,7 +63,8 @@ class ApiService {
     };
   }
 
-  Future<void> uploadImage(BuildContext context, File file) async {
+  Future<void> uploadImage(BuildContext context, File file, String description,
+      String topics) async {
     showLoadingDialog('Uploading', context);
     final ref = _storage
         .ref()
@@ -67,6 +77,8 @@ class ApiService {
       'image': url,
       'timestamp': FieldValue.serverTimestamp(),
       'fromUser': FirebaseAuth.instance.currentUser!.email,
+      'description': description,
+      'topics': topics,
     });
 
     if (context.mounted) {

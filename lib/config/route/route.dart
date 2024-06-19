@@ -1,3 +1,4 @@
+import 'package:Camera/features/auth/presentation/pages/verification.dart';
 import 'package:Camera/features/camera/presentation/pages/image_preview.dart';
 import 'package:Camera/config/route/routes_name.dart';
 import 'package:Camera/features/camera/presentation/pages/camera_screen.dart';
@@ -26,6 +27,8 @@ class AppRoute {
         return MaterialPageRoute(builder: (_) => const SignInWidget());
       case AppRouteName.signup:
         return MaterialPageRoute(builder: (_) => const SignUpWidget());
+      case AppRouteName.verification:
+        return MaterialPageRoute(builder: (_) => const EmailVerification());
       case AppRouteName.mainscreen:
         return MaterialPageRoute(builder: (_) => const MainScreen());
       case AppRouteName.camera:
@@ -33,7 +36,7 @@ class AppRoute {
       case AppRouteName.imagepreview:
         return MaterialPageRoute(builder: (_) => const ImagePreview());
       case AppRouteName.imageGalleryView:
-        return MaterialPageRoute(builder: (_) => const ImageGaleryView());
+        return MaterialPageRoute(builder: (_) => const ImageGalleryView());
       case AppRouteName.imageDiscoveryView:
         return MaterialPageRoute(builder: (_) => const ImageDiscoveryView());
       case AppRouteName.edit:

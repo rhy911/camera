@@ -83,7 +83,7 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                         provider.globalImageUrls[provider.globalCurrentIndex],
                       );
                       if (context.mounted) {
-                        apiService.uploadImage(context, imageFile);
+                        apiService.uploadImage(context, imageFile, '', '');
                       }
                     },
                     child: const Text('Pin'),

@@ -134,7 +134,10 @@ class _ImageGridState extends State<ImageGrid> {
                         onTap: () {
                           imageProvider.currentIndex = index;
                           debugPrint('${imageProvider.currentIndex}');
-                          Navigator.pushNamed(context, '/Gallery View');
+                          Navigator.pushNamed(context, '/Gallery View')
+                              .then((value) {
+                            setState(() {});
+                          });
                         },
                       ),
                     );

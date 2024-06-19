@@ -49,7 +49,7 @@ class _GesturesState extends State<Gestures> {
       }
 
       setState(() {
-        Future.delayed(const Duration(seconds: 10)).whenComplete(() {
+        Future.delayed(const Duration(seconds: 5)).whenComplete(() {
           setState(() {
             _isAutoFocus = true;
           });
@@ -140,12 +140,12 @@ class _GesturesState extends State<Gestures> {
                         width: 120,
                         child: SliderTheme(
                           data: const SliderThemeData(
-                            trackHeight: 2.0,
-                            trackShape: RoundedRectSliderTrackShape(),
-                            thumbShape:
-                                RoundSliderThumbShape(enabledThumbRadius: 5.0),
-                            thumbColor: Colors.white,
-                          ),
+                              trackHeight: 2.0,
+                              trackShape: RoundedRectSliderTrackShape(),
+                              thumbShape: RoundSliderThumbShape(
+                                  enabledThumbRadius: 5.0),
+                              thumbColor: Colors.white,
+                              activeTrackColor: Colors.white),
                           child: Slider(
                             value: _exposureLevel,
                             min: -5.0,

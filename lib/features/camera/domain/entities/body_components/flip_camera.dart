@@ -28,7 +28,8 @@ class _FlipCameraButtonState extends State<FlipCameraButton> {
                 .flipCamera();
         widget.onCameraFlip(newController);
       },
-      icon: const Icon(Icons.flip_camera_ios_outlined, size: 50),
+      icon: const Icon(Icons.flip_camera_ios_outlined,
+          size: 50, color: Colors.white),
       padding: const EdgeInsets.all(10),
     );
   }

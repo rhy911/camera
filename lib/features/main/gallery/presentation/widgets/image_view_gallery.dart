@@ -7,14 +7,14 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 
-class ImageGaleryView extends StatefulWidget {
-  const ImageGaleryView({super.key});
+class ImageGalleryView extends StatefulWidget {
+  const ImageGalleryView({super.key});
 
   @override
-  State<ImageGaleryView> createState() => _ImageGaleryViewState();
+  State<ImageGalleryView> createState() => _ImageGalleryViewState();
 }
 
-class _ImageGaleryViewState extends State<ImageGaleryView> {
+class _ImageGalleryViewState extends State<ImageGalleryView> {
   late PageController _pageController;
 
   @override

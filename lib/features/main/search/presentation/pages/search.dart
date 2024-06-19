@@ -1,5 +1,3 @@
-import 'package:Camera/test/api/connect_api.dart';
-import 'package:Camera/test/api/user_mode.dart';
 import 'package:flutter/material.dart';
 
 class Search extends StatefulWidget {
@@ -10,19 +8,6 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  List<UserModel> dataUser = [];
-  initData() async {
-    Api api = Api();
-    await api.getApi();
-    dataUser = api.dataUser;
-  }
-
-  @override
-  void initState() {
-    initData();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,16 +43,6 @@ class _SearchState extends State<Search> {
                     ),
                     style: Theme.of(context).textTheme.labelMedium),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(dataUser[index].firstName ?? "0"),
-                    subtitle: Text(dataUser[index].address?.country ?? "0"),
-                  );
-                },
-                itemCount: dataUser.length,
-              )
             ],
           ),
         ));

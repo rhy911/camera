@@ -7,7 +7,6 @@ import 'package:Camera/features/camera/provider/camera_state.dart';
 import 'package:provider/provider.dart';
 
 //TODO: Image Quality is not good, need to fix it
-//TODO: Implement another way to delete in grid view
 
 class ImagePreview extends StatefulWidget {
   const ImagePreview({super.key});
@@ -38,7 +37,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                     if (cameraProvider.capturedImage != null) {
                       final apiService = ApiService();
                       apiService.uploadImage(
-                          context, cameraProvider.capturedImage!);
+                          context, cameraProvider.capturedImage!, '', '');
                     }
                   },
                   icon: const Icon(Icons.share_rounded)),

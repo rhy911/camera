@@ -60,6 +60,7 @@ class _AdjustPageState extends State<AdjustPage> {
     return Consumer<provider.ImageProvider>(
         builder: (BuildContext context, imageProvider, Widget? child) {
       return Scaffold(
+        backgroundColor: Colors.black,
         appBar: AppBar(
           title: const Text('Adjust'),
           centerTitle: true,

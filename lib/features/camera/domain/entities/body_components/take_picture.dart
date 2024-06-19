@@ -57,7 +57,7 @@ class _TakePictureButtonState extends State<TakePictureButton> {
         }
       },
       iconSize: 85,
-      icon: const Icon(Icons.circle_outlined),
+      icon: const Icon(Icons.circle_outlined, color: Colors.white),
     );
   }
 }

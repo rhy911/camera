@@ -49,13 +49,13 @@ class EditingScreen extends StatelessWidget {
                   onPressed: () {
                     showConfirmationDialog(context,
                             title: 'Save to: ',
-                            leftText: 'My Galery',
+                            leftText: 'My Gallery',
                             rightText: 'This Device')
                         .then((value) {
                       if (value == true) {
                         convertMemoryImageToFile(imageProvider.currentImagePath)
                             .then((file) {
-                          ApiService().uploadImage(context, file);
+                          ApiService().uploadImage(context, file, '', '');
                         }).then((_) {
                           imageProvider.currentImage = null;
                           Navigator.pop(context);

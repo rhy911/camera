@@ -1,5 +1,4 @@
 import 'package:Camera/core/utils/components/theme_switch.dart';
-import 'package:Camera/config/themes/app_color.dart';
 import 'package:flutter/material.dart';
 
 class StartingScreen extends StatelessWidget {
@@ -21,24 +20,32 @@ class StartingScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "C A M\n        E D I T",
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayLarge
-                      ?.copyWith(fontSize: 80),
+                  "&C A M\nE D I T&",
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      fontSize: 70,
+                      fontStyle: FontStyle.italic,
+                      color: const Color(0xFFAC29B8),
+                      shadows: [
+                        const Shadow(
+                          offset: Offset(2.0, 2.0),
+                          blurRadius: 3.0,
+                          color: Color(0xFFFFFFFF),
+                        ),
+                      ]),
                 ),
                 const SizedBox(height: 100),
                 SizedBox(
                   width: 300,
-                  height: 60,
+                  height: 50,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: AppColor.white,
-                      backgroundColor: AppColor.midColor,
+                      foregroundColor: const Color(0xFFFFFFFF),
+                      backgroundColor: const Color(0xFFAC29B8),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       elevation: 5,
+                      shadowColor: const Color(0xFF979DBB),
                     ),
                     onPressed: () {
                       Navigator.pushNamed(context, '/Sign Up');
