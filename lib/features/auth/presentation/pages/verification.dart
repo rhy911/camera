@@ -43,30 +43,23 @@ class _EmailVerificationState extends State<EmailVerification> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           title: const Text('Email Verification'),
         ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      timer.cancel();
-                      Navigator.pop(context, false);
-                    },
-                    icon: const Icon(Icons.close),
-                  )
-                ],
-              ),
-              const Text(
-                  'We sent you an email with a link to verify your account.\nPlease check your inbox'),
-              ElevatedButton(
-                onPressed: sendEmailVerification,
-                child: const Text('Resend'),
+              Text(
+                  'We sent you an email with a link to verify your account.\nPlease check your inbox',
+                  style: Theme.of(context).textTheme.bodyLarge),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: 300,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: sendEmailVerification,
+                  child: const Text('Resend'),
+                ),
               ),
             ],
           ),

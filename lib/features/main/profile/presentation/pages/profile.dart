@@ -1,6 +1,7 @@
 import 'package:Camera/core/utils/components/theme_switch.dart';
 import 'package:Camera/features/editor/provider/image_provider.dart'
     as provider;
+import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<provider.ImageProvider>(
-      builder: (BuildContext context, imageProvider, Widget? child) {
+    return Consumer2<provider.ImageProvider, DiscoveryProvider>(
+      builder: (BuildContext context, provider.ImageProvider imageProvider,
+          DiscoveryProvider discoveryProvider, Widget? child) {
         return Scaffold(
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -44,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               MaterialButton(
                 onPressed: () {
                   imageProvider.reset();
+                  discoveryProvider.reset();
                   FirebaseAuth.instance.signOut();
                   Navigator.pushReplacementNamed(context, '/Starting Page');
                 },

@@ -35,12 +35,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
         final List<String> newImages = imageData.map((imageModel) {
           return imageModel.imageUrl;
         }).toList();
-        final List<String> newFromUser = imageData.map((doc) {
-          return doc.fromUser;
+        final List<String> newFromUser = imageData.map((imageModel) {
+          return imageModel.fromUser;
+        }).toList();
+        final List<String> newDescription = imageData.map((imageModel) {
+          return imageModel.description;
         }).toList();
 
         provider.loadGlobalImageList(newImages);
         provider.loadUser(newFromUser);
+        provider.loadImageDescription(newDescription);
         provider.globalLastDocument =
             data['lastDocument'] as DocumentSnapshot<Object?>?;
       }
@@ -90,13 +94,14 @@ class _DiscoverPageState extends State<DiscoverPage> {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _scrollController,
-            cacheExtent: 9999, // Keep items in memory for a longer duration
+            cacheExtent: 300, // Keep items in memory for a longer duration
             slivers: <Widget>[
               SliverAppBar(
                 automaticallyImplyLeading: false,
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 toolbarHeight: 80.0,
-                title: const Text('D I S C O V E R Y'),
+                title: Text('D I S C O V E R Y',
+                    style: Theme.of(context).textTheme.headlineLarge),
                 floating: true,
                 snap: true,
               ),

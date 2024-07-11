@@ -22,23 +22,27 @@ class ApiService {
 
   Future<Map<String, dynamic>> fetchImages(
       DocumentSnapshot? lastDocument) async {
-    Query query = _firestore
-        .collection('imports')
-        .orderBy('timestamp', descending: true)
-        .limit(20);
+    try {
+      Query query = _firestore
+          .collection('imports')
+          .orderBy('timestamp', descending: true)
+          .limit(20);
 
-    if (lastDocument != null) {
-      query = query.startAfterDocument(lastDocument);
+      if (lastDocument != null) {
+        query = query.startAfterDocument(lastDocument);
+      }
+
+      final querySnapshot = await query.get();
+      return {
+        'images': querySnapshot.docs.map((doc) {
+          return ImageModel.fromDocument(doc);
+        }).toList(),
+        'lastDocument': querySnapshot.docs.last,
+      };
+    } catch (e) {
+      debugPrint("Api Fetching Image Error: $e");
+      return {'images': [], 'lastDocument': null};
     }
-
-    final querySnapshot = await query.get();
-
-    return {
-      'images': querySnapshot.docs.map((doc) {
-        return ImageModel.fromDocument(doc);
-      }).toList(),
-      'lastDocument': querySnapshot.docs.last,
-    };
   }
 
   Future<Map<String, dynamic>> fetchImagesByUser(

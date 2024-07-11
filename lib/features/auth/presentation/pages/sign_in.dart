@@ -57,12 +57,16 @@ class _SignInWidgetState extends State<SignInWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor: Theme.of(context).primaryColor,
-      body: Padding(
-        padding: const EdgeInsets.only(top: 100.0),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/sign_in_up.jpg'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: const EdgeInsets.only(top: 80),
+        alignment: Alignment.topCenter,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -80,35 +84,34 @@ class _SignInWidgetState extends State<SignInWidget> {
               ],
             ),
             const SizedBox(height: 30),
-            RichText(
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'Welcome Back!\n',
-                    style: Theme.of(context)
-                        .textTheme
-                        .displayMedium!
-                        .copyWith(fontStyle: FontStyle.italic),
-                  ),
-                  TextSpan(
-                    text: '\nSign in',
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                ],
-              ),
+            Text(
+              'Welcome Back!',
+              style: Theme.of(context)
+                  .textTheme
+                  .displayLarge!
+                  .copyWith(fontStyle: FontStyle.italic),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              "Let's sign in",
+              style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 40),
+            Align(
+                alignment: Alignment.centerLeft,
+                widthFactor: 7,
+                child: Text('Email',
+                    style: Theme.of(context).textTheme.titleLarge)),
+            const SizedBox(height: 5),
             SizedBox(
               width: 300,
               height: 40,
               child: TextField(
                 controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Email',
-                  labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: Colors.black54,
-                        fontStyle: FontStyle.italic,
-                      ),
+                  hintText: 'abc@email.com',
+                  hintStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Colors.black54, fontStyle: FontStyle.italic),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -116,17 +119,26 @@ class _SignInWidgetState extends State<SignInWidget> {
                   fillColor: Colors.white,
                 ),
                 style: const TextStyle(color: Colors.black87, fontSize: 20),
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
               ),
             ),
             const SizedBox(height: 20),
+            Align(
+                alignment: Alignment.centerLeft,
+                widthFactor: 4,
+                child: Text('Password',
+                    style: Theme.of(context).textTheme.titleLarge)),
+            const SizedBox(height: 5),
             SizedBox(
               width: 300,
               height: 40,
               child: TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
-                  labelText: 'Password',
-                  labelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  hintText: '********',
+                  hintStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: Colors.black54,
                         fontStyle: FontStyle.italic,
                       ),
@@ -138,27 +150,27 @@ class _SignInWidgetState extends State<SignInWidget> {
                 ),
                 style: const TextStyle(color: Colors.black87, fontSize: 20),
                 obscureText: true,
+                onTapOutside: (event) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
               ),
             ),
             const SizedBox(height: 40),
             SizedBox(
-              width: 200,
+              width: 300,
               height: 50,
               child: ElevatedButton(
-                onPressed: () {
-                  signInUser();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0x9EF900BF),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                  onPressed: () {
+                    signInUser();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0x9EF900BF),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: Text('Continue',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: const Color(0xFFFFFFFF),
-                        )),
-              ),
+                  child: Text('Continue',
+                      style: Theme.of(context).textTheme.headlineMedium)),
             ),
           ],
         ),

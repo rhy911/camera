@@ -8,10 +8,12 @@ class DiscoveryProvider extends ChangeNotifier {
   DocumentSnapshot? _globalLastDocument;
   int _globalCurrentIndex = 0;
   Image? _globalCurrentImage;
+  final List<String> _imageDescription = [];
 
   List<String> get globalImageUrls => _globalImageUrls;
   DocumentSnapshot? get globalLastDocument => _globalLastDocument;
   List<String> get fromUser => _fromUser;
+  List<String> get imageDescription => _imageDescription;
   int get globalCurrentIndex => _globalCurrentIndex;
   Image get globalCurrentImage =>
       _globalCurrentImage ??
@@ -19,6 +21,7 @@ class DiscoveryProvider extends ChangeNotifier {
           image: CachedNetworkImageProvider(
               _globalImageUrls[_globalCurrentIndex]));
   String get fromUserImage => _fromUser[_globalCurrentIndex];
+  String get imageDescriptionText => _imageDescription[_globalCurrentIndex];
 
   void reset() {
     _globalImageUrls.clear();
@@ -36,6 +39,11 @@ class DiscoveryProvider extends ChangeNotifier {
 
   void loadUser(List<String> user) {
     _fromUser.addAll(user);
+    notifyListeners();
+  }
+
+  void loadImageDescription(List<String> description) {
+    _imageDescription.addAll(description);
     notifyListeners();
   }
 

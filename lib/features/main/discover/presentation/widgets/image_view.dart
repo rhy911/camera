@@ -70,9 +70,13 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                 ),
               ),
               const SizedBox(height: 10),
+              Text(provider.imageDescription[provider.globalCurrentIndex],
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      )),
               Text(
                 'From: ${provider.fromUser[provider.globalCurrentIndex]}',
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -86,7 +90,7 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                         apiService.uploadImage(context, imageFile, '', '');
                       }
                     },
-                    child: const Text('Pin'),
+                    child: const Text('Save'),
                   ),
                   TextButton(
                     onPressed: () async {
@@ -97,7 +101,7 @@ class _ImageDiscoveryViewState extends State<ImageDiscoveryView> {
                         saveImageToGallery(context, imageFile.path);
                       }
                     },
-                    child: const Text('Save'),
+                    child: const Text('Download'),
                   ),
                 ],
               ),
