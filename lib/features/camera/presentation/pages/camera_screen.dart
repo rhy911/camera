@@ -1,20 +1,17 @@
-import 'package:Camera/features/camera/domain/entities/appbar_components/aspect_ratio.dart';
-import 'package:Camera/features/camera/domain/entities/appbar_components/flash.dart';
-import 'package:Camera/features/camera/domain/entities/body_components/flip_camera.dart';
-import 'package:Camera/features/camera/domain/entities/body_components/gestures.dart';
-import 'package:Camera/features/camera/domain/entities/appbar_components/gridlines.dart';
-import 'package:Camera/features/camera/domain/entities/appbar_components/timer.dart';
-import 'package:Camera/features/camera/domain/entities/body_components/take_picture.dart';
-import 'package:Camera/features/camera/domain/crop_to_aspect_ratio.dart';
-import 'package:Camera/features/camera/provider/camera_state.dart';
-import 'package:Camera/config/themes/app_color.dart';
+import 'package:camera_app/features/camera/domain/entities/appbar_components/aspect_ratio.dart';
+import 'package:camera_app/features/camera/domain/entities/appbar_components/flash.dart';
+import 'package:camera_app/features/camera/domain/entities/body_components/flip_camera.dart';
+import 'package:camera_app/features/camera/domain/entities/body_components/gestures.dart';
+import 'package:camera_app/features/camera/domain/entities/appbar_components/gridlines.dart';
+import 'package:camera_app/features/camera/domain/entities/appbar_components/timer.dart';
+import 'package:camera_app/features/camera/domain/entities/body_components/take_picture.dart';
+import 'package:camera_app/features/camera/domain/crop_to_aspect_ratio.dart';
+import 'package:camera_app/features/camera/provider/camera_state.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/core/camera_config.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:Camera/main.dart';
 import 'package:provider/provider.dart';
-
-//TODO: Flash malfunctioning
-//TODO: Optimize capturing speed
 
 /// CameraApp is the main widget for the camera functionality.
 
@@ -32,7 +29,8 @@ class _CameraAppState extends State<CameraApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     // Initialize the camera controller with the first camera and max resolution
-    _controller = CameraController(cameras[0], ResolutionPreset.max);
+    _controller =
+        CameraController(CameraConfig.cameras[0], ResolutionPreset.max);
     _controller.initialize().then((_) {
       if (!mounted) {
         return;

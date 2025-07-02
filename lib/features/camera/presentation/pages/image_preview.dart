@@ -1,12 +1,10 @@
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/core/data/service/api_service.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:Camera/core/utils/components/download_image.dart';
-import 'package:Camera/features/camera/provider/camera_state.dart';
+import 'package:camera_app/core/utils/components/download_image.dart';
+import 'package:camera_app/features/camera/provider/camera_state.dart';
 import 'package:provider/provider.dart';
-
-//TODO: Image Quality is not good, need to fix it
 
 class ImagePreview extends StatefulWidget {
   const ImagePreview({super.key});

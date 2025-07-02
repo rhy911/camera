@@ -1,5 +1,5 @@
-import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/core/utils/helper/confirmation_dialog.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

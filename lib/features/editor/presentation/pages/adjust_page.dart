@@ -1,6 +1,6 @@
-import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
-import 'package:Camera/features/editor/presentation/widget/slider.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:camera_app/features/editor/presentation/widget/slider.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:colorfilter_generator/addons.dart';
 import 'package:colorfilter_generator/colorfilter_generator.dart';
@@ -75,10 +75,14 @@ class _AdjustPageState extends State<AdjustPage> {
                     imageProvider.currentImagePath = capturedImage;
                     imageProvider.currentImage = Image.memory(capturedImage!);
                   }).then((_) {
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   });
                 } else {
-                  Navigator.pop(context);
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
                 }
               },
               icon: const Icon(Icons.done),

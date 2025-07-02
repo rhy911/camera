@@ -1,19 +1,23 @@
 import 'dart:io';
 
-import 'package:Camera/core/utils/helper/loading_dialog.dart';
+import 'package:camera_app/core/utils/helper/loading_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:gal/gal.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
-void saveImageToGallery(BuildContext context, String file) {
-  PhotoManager.requestPermissionExtend().then((PermissionState state) async {
-    if (state == PermissionState.authorized) {
-      // Save the cropped image to the gallery
-      showLoadingDialog('Saving', context);
-      await ImageGallerySaver.saveFile(file);
+Future<void> saveImageToGallery(BuildContext context, String file) async {
+  if (!context.mounted) return;
 
+  final PermissionState state = await PhotoManager.requestPermissionExtend();
+  if (!context.mounted) return;
+
+  if (state == PermissionState.authorized) {
+    // Save the cropped image to the gallery
+    showLoadingDialog('Saving', context);
+    try {
+      await Gal.putImage(file);
       if (context.mounted) {
         hideLoadingDialog(context);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -24,10 +28,20 @@ void saveImageToGallery(BuildContext context, String file) {
           ),
         );
       }
-    } else {
-      debugPrint('Permission to access gallery is denied');
+    } catch (e) {
+      if (context.mounted) {
+        hideLoadingDialog(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to save: $e'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     }
-  });
+  } else {
+    debugPrint('Permission to access gallery is denied');
+  }
 }
 
 Future<File> urlToFile(String imageUrl) async {

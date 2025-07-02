@@ -1,7 +1,7 @@
-import 'package:Camera/core/utils/components/theme_switch.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/core/utils/components/theme_switch.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
-import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
+import 'package:camera_app/features/main/discover/provider/discovery_provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

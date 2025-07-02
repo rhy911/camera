@@ -1,9 +1,9 @@
-import 'package:Camera/features/main/add/presentation/pages/add.dart';
-import 'package:Camera/features/main/gallery/presentation/pages/gallery.dart';
-import 'package:Camera/features/main/discover/presentation/pages/discover.dart';
-import 'package:Camera/features/main/profile/presentation/pages/profile.dart';
-import 'package:Camera/features/main/search/presentation/pages/search.dart';
-import 'package:Camera/config/themes/app_color.dart';
+import 'package:camera_app/features/main/add/presentation/pages/add.dart';
+import 'package:camera_app/features/main/gallery/presentation/pages/gallery.dart';
+import 'package:camera_app/features/main/discover/presentation/pages/discover.dart';
+import 'package:camera_app/features/main/profile/presentation/pages/profile.dart';
+import 'package:camera_app/features/main/search/presentation/pages/search.dart';
+import 'package:camera_app/config/themes/app_color.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 

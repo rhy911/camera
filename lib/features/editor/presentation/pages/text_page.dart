@@ -1,9 +1,10 @@
-import 'package:Camera/features/editor/model/fonts.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/model/fonts.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:flutter/material.dart';
 import 'package:lindi_sticker_widget/lindi_controller.dart';
 import 'package:lindi_sticker_widget/lindi_sticker_widget.dart';
+import 'package:lindi_sticker_widget/lindi_sticker_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:text_editor/text_editor.dart';
 
@@ -15,8 +16,36 @@ class TextPage extends StatefulWidget {
 }
 
 class _TextPageState extends State<TextPage> {
-  LindiController controller = LindiController();
+  late LindiController controller;
   bool showEditor = false;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = LindiController(
+      icons: [
+        LindiStickerIcon(
+          icon: Icons.close,
+          alignment: Alignment.topLeft,
+          onTap: () {
+            controller.selectedWidget!.delete();
+          },
+        ),
+        LindiStickerIcon(
+          icon: Icons.crop_free,
+          alignment: Alignment.bottomRight,
+          type: IconType.resize,
+        ),
+        LindiStickerIcon(
+          icon: Icons.flip,
+          alignment: Alignment.bottomLeft,
+          onTap: () {
+            controller.selectedWidget!.flip();
+          },
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +103,7 @@ class _TextPageState extends State<TextPage> {
                         setState(() {
                           showEditor = false;
                           if (text.isNotEmpty) {
-                            controller.addWidget(
+                            controller.add(
                                 Text(text, style: style, textAlign: align));
                           }
                         });

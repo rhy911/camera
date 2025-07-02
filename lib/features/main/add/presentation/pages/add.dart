@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/core/data/service/api_service.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 

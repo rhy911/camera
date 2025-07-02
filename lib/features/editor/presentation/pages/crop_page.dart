@@ -1,12 +1,12 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:crop_image/crop_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 
 class CropPage extends StatelessWidget {

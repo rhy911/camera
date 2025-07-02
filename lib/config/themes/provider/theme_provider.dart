@@ -17,10 +17,6 @@ class ThemeProvider extends ChangeNotifier {
         _themeData = ThemeMode.light;
         _isDarkMode = newStatus;
         break;
-      default:
-        ThemeMode.system;
-        _themeData = ThemeMode.system;
-        break;
     }
     notifyListeners();
   }

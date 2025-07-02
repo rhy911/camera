@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:Camera/main.dart';
+import 'package:camera_app/core/camera_config.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -64,7 +64,7 @@ class CameraProvider with ChangeNotifier {
   Future<CameraController> flipCamera() async {
     isRearCameraSelected = !isRearCameraSelected;
     final newController = CameraController(
-      isRearCameraSelected ? cameras[0] : cameras[1],
+      isRearCameraSelected ? CameraConfig.cameras[0] : CameraConfig.cameras[1],
       ResolutionPreset.max,
     );
     await newController.initialize();

@@ -1,29 +1,29 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:camera_app/core/data/firebase/firebase_options.dart';
-import 'package:camera_app/core/camera_config.dart';
+import 'dart:async';
 import 'package:camera_app/config/route/route.dart';
 import 'package:camera_app/config/themes/provider/theme_provider.dart';
 import 'package:camera_app/features/camera/provider/camera_state.dart';
 import 'package:camera_app/features/main/discover/provider/discovery_provider.dart';
+import 'package:camera/camera.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:camera_app/config/themes/app_theme.dart';
+import 'package:camera_app/core/data/firebase/firebase_options.dart';
 import 'package:provider/provider.dart';
 import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 
+late List<CameraDescription> cameras;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  print('Starting app...');
-
+  
   // Set up error handling
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     print('Flutter Error: ${details.exception}');
+    print('Stack trace: ${details.stack}');
   };
-
-  // Initialize Firebase
+  
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -32,12 +32,18 @@ Future<void> main() async {
   } catch (e) {
     print('Firebase initialization error: $e');
   }
-
-  // Initialize cameras
-  await CameraConfig.initialize();
-
-  // Set system UI
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  
+  try {
+    cameras = await availableCameras();
+    print('Cameras initialized successfully: ${cameras.length} cameras found');
+  } catch (e) {
+    print('Camera initialization error: $e');
+    cameras = [];
+  }
+  
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarDividerColor: Colors.transparent,
@@ -45,16 +51,20 @@ Future<void> main() async {
   ));
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
-    runApp(const MyApp());
+    try {
+      runApp(const MyApp());
+    } catch (e) {
+      print('Error running app: $e');
+    }
   });
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print('Building MyApp widget...');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ThemeProvider>(

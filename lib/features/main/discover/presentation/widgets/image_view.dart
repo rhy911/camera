@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:Camera/core/utils/components/download_image.dart';
-import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/features/main/discover/provider/discovery_provider.dart';
+import 'package:camera_app/core/utils/components/download_image.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
+import 'package:camera_app/features/main/discover/provider/discovery_provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';

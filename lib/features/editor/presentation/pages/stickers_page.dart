@@ -1,10 +1,11 @@
-import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/features/editor/presentation/widget/sticker.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/core/data/service/api_service.dart';
+import 'package:camera_app/features/editor/presentation/widget/sticker.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:flutter/material.dart';
 import 'package:lindi_sticker_widget/lindi_controller.dart';
 import 'package:lindi_sticker_widget/lindi_sticker_widget.dart';
+import 'package:lindi_sticker_widget/lindi_sticker_icon.dart';
 import 'package:provider/provider.dart';
 
 class StickersPage extends StatefulWidget {
@@ -15,8 +16,37 @@ class StickersPage extends StatefulWidget {
 }
 
 class _StickersPageState extends State<StickersPage> {
-  LindiController controller = LindiController();
+  late LindiController controller;
   Future<List<String>> stickers = ApiService().fetchStickers();
+
+  @override
+  void initState() {
+    super.initState();
+    controller = LindiController(
+      icons: [
+        LindiStickerIcon(
+          icon: Icons.close,
+          alignment: Alignment.topLeft,
+          onTap: () {
+            controller.selectedWidget!.delete();
+          },
+        ),
+        LindiStickerIcon(
+          icon: Icons.crop_free,
+          alignment: Alignment.bottomRight,
+          type: IconType.resize,
+        ),
+        LindiStickerIcon(
+          icon: Icons.flip,
+          alignment: Alignment.bottomLeft,
+          onTap: () {
+            controller.selectedWidget!.flip();
+          },
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<provider.ImageProvider>(
@@ -64,8 +94,8 @@ class _StickersPageState extends State<StickersPage> {
                       for (int i = 0; i < snapshot.data!.length; i++)
                         sticker(Image.network(snapshot.data![i]),
                             onPressed: () {
-                          controller.addWidget(
-                              Image.network(snapshot.data![i], width: 50));
+                          controller
+                              .add(Image.network(snapshot.data![i], width: 50));
                         })
                     ],
                   );

@@ -1,4 +1,4 @@
-import 'package:Camera/core/utils/helper/message_dialog.dart';
+import 'package:camera_app/core/utils/helper/message_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

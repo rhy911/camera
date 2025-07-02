@@ -1,5 +1,5 @@
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/config/themes/provider/theme_provider.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/config/themes/provider/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:provider/provider.dart';

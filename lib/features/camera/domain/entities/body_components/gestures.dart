@@ -106,7 +106,7 @@ class _GesturesState extends State<Gestures> {
               children: [
                 Center(
                   child: Container(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     padding: const EdgeInsets.all(5.0),
                     child: Text("Zoom: ${_zoom.toStringAsFixed(1)}",
                         style: const TextStyle(

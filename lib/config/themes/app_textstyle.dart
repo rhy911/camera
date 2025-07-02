@@ -1,4 +1,4 @@
-import 'package:Camera/config/themes/app_color.dart';
+import 'package:camera_app/config/themes/app_color.dart';
 import 'package:flutter/material.dart';
 
 class AppTextStyle {

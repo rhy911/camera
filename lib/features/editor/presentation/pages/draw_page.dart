@@ -1,6 +1,6 @@
-import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
-import 'package:Camera/features/editor/presentation/widget/slider.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:camera_app/features/editor/presentation/widget/slider.dart';
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';

@@ -1,9 +1,9 @@
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/features/editor/model/filters.dart';
-import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/features/editor/model/filters.dart';
+import 'package:camera_app/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 import 'package:screenshot/screenshot.dart';
 
@@ -57,10 +57,14 @@ class _FiltersPageState extends State<FiltersPage> {
                       imageProvider.currentImagePath = capturedImage;
                       imageProvider.currentImage = Image.memory(capturedImage!);
                     }).then((_) {
-                      Navigator.pop(context);
+                      if (context.mounted) {
+                        Navigator.pop(context);
+                      }
                     });
                   } else {
-                    Navigator.pop(context);
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
                   }
                 },
                 icon: const Icon(Icons.done),

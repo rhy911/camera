@@ -1,5 +1,5 @@
-import 'package:Camera/config/themes/app_color.dart';
-import 'package:Camera/config/themes/app_textstyle.dart';
+import 'package:camera_app/config/themes/app_color.dart';
+import 'package:camera_app/config/themes/app_textstyle.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {

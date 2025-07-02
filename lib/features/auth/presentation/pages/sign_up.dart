@@ -1,5 +1,5 @@
-import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/core/utils/helper/message_dialog.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
+import 'package:camera_app/core/utils/helper/message_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 

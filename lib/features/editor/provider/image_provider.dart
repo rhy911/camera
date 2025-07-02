@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:Camera/core/data/service/api_service.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
 
 class ImageProvider extends ChangeNotifier {
   final List<String> _imageUrls = [];

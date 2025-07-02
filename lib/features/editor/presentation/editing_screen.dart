@@ -1,13 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:Camera/core/data/service/api_service.dart';
-import 'package:Camera/core/utils/helper/confirmation_dialog.dart';
-import 'package:Camera/features/editor/presentation/widget/icon_button_with_title.dart';
+import 'package:camera_app/core/data/service/api_service.dart';
+import 'package:camera_app/core/utils/helper/confirmation_dialog.dart';
+import 'package:camera_app/features/editor/presentation/widget/icon_button_with_title.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:Camera/features/editor/provider/image_provider.dart'
+import 'package:camera_app/features/editor/provider/image_provider.dart'
     as provider;
 
 class EditingScreen extends StatelessWidget {
@@ -36,7 +36,7 @@ class EditingScreen extends StatelessWidget {
                           leftText: 'Cancel',
                           rightText: 'Discard')
                       .then((value) {
-                    if (value == true) {
+                    if (value == true && context.mounted) {
                       imageProvider.currentImage = null;
                       Navigator.pop(context);
                     }
@@ -55,10 +55,14 @@ class EditingScreen extends StatelessWidget {
                       if (value == true) {
                         convertMemoryImageToFile(imageProvider.currentImagePath)
                             .then((file) {
-                          ApiService().uploadImage(context, file, '', '');
+                          if (context.mounted) {
+                            ApiService().uploadImage(context, file, '', '');
+                          }
                         }).then((_) {
-                          imageProvider.currentImage = null;
-                          Navigator.pop(context);
+                          if (context.mounted) {
+                            imageProvider.currentImage = null;
+                            Navigator.pop(context);
+                          }
                         });
                       } else {
                         // Share to This Device

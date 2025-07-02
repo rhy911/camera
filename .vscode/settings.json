@@ -12,5 +12,13 @@
   },
   "[dart]": {
     "editor.defaultFormatter": "Dart-Code.dart-code"
+  },
+  "files.exclude": {
+    "**/build/": true,
+    "**/.dart_tool/": true
+  },
+  "files.watcherExclude": {
+    "**/build/**": true,
+    "**/.dart_tool/**": true
   }
 }
