@@ -13,9 +13,8 @@ class _SearchState extends State<Search> {
     return Scaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: const Text(
-            '  S E A R C H',
-          ),
+          title: Text('  S E A R C H',
+              style: Theme.of(context).textTheme.headlineLarge),
         ),
         body: Center(
           child: Column(

@@ -32,8 +32,9 @@ class _AddWidgetState extends State<AddWidget> {
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Colors.transparent,
-          title: const Text(
+          title: Text(
             '  C R E A T E',
+            style: Theme.of(context).textTheme.headlineLarge,
           ),
         ),
         body: SingleChildScrollView(

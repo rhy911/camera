@@ -88,7 +88,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: RefreshIndicator(
           onRefresh: () async {
-            provider.disposeGlobalImageList();
+            provider.reset();
             await _fetchImages();
           },
           child: CustomScrollView(
